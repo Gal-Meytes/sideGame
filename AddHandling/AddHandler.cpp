@@ -10,15 +10,13 @@
  * @note If the number of arguments is less than 2, an error message is printed to std::cerr.
  */
 void handleAdd(const std::vector<std::string>& args) {
-    if (args.size() < 2) {
-        std::cerr << "Error: 'add' command requires at least 2 arguments." << std::endl;
-        return;
+    if (args.size() >= 2) {
+        
+        // Extract user ID and movie IDs
+        std::string userId = args[0];
+        std::vector<std::string> movieIds(args.begin() + 1, args.end());
+
+        // Delegate the operation to the add function
+        add(userId, movieIds);
     }
-
-    // Extract user ID and movie IDs
-    std::string userId = args[0];
-    std::vector<std::string> movieIds(args.begin() + 1, args.end());
-
-    // Delegate the operation to the add function
-    add(userId, movieIds);
 }
