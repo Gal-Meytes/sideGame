@@ -10,15 +10,13 @@
  *             The first argument should be the user ID and the second argument should be the movie ID.
  */
 void handleReccomend(const std::vector<std::string>& args) {
-    if (args.size() != 2) {
-        std::cerr << "Error: 'reccomend' command requires at least 2 arguments." << std::endl;
-        return;
+    if (args.size() == 2) {
+        
+         // Extract user ID and movie ID
+        std::string userId = args[0];
+        std::string movieId = args[1];
+
+        // Delegate the operation to the reccomend function
+        reccomend(userId, movieId);
     }
-
-    // Extract user ID and movie ID
-    std::string userId = args[0];
-    std::string movieId = args[1];
-
-    // Delegate the operation to the reccomend function
-    reccomend(userId, movieId);
 }
