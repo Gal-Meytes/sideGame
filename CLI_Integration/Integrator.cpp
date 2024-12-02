@@ -1,7 +1,7 @@
 #include "Integrator.hpp"
-#include "addHandler.h"
-#include "helpHandler.h"
-#include "recommendHandler.h"
+#include "AddHandler.hpp"
+#include "HelpHandler.hpp"
+#include "ReccomendHandler.hpp"
 
 void integrationCommend(const std::string& input) {
     std::istringstream iss(input);
@@ -19,7 +19,7 @@ void integrationCommend(const std::string& input) {
     } else if (command == "add") {
         handleAdd(args);
     } else if (command == "recommend") {
-        handleRecommend(args);
+        handleReccomend(args);
     } else {
         std::cerr << "Unknown command. Type 'help' to see available commands." << std::endl;
     }
