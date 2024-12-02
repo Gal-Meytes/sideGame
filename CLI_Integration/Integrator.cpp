@@ -36,7 +36,5 @@ void integrationCommend(const std::string& input) {
         handleAdd(args);
     } else if (command == "recommend") {
         handleReccomend(args);
-    } else {
-        std::cerr << "Unknown command. Type 'help' to see available commands." << std::endl;
     }
 }
