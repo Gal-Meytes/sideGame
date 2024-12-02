@@ -5,11 +5,6 @@ int main() {
 
     while (true) {
         std::getline(std::cin, input);
-
-        if (input == "exit") {
-            break;
-        }
-
         integrationCommend(input);
     }
 
