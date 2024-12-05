@@ -12,4 +12,4 @@ public:
 };
 
 
-#endif //PROJECT_STORAGEDEVICE_H
+#endif //STORAGEDEVICE_H

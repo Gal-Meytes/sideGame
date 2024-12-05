@@ -7,16 +7,17 @@
 #define PROJECT_USER_H
 
 #include "LibraryDependencies.h"
-#include "Identifier.h"
+#include "Storable.h"
 
-class User :Identifier {
+class User :Storable {
 private:
     int userID;
     std::vector<std::string>& movieIds;
 public:
     User(int userID, const std::vector<std::string>& movieIds);
     void insertMovies(std::vector<std::string>& movieIds);
-    std::string Identify();
+    std::string getIdentity();
+    std::string serialize();
 };
 
 

@@ -6,6 +6,7 @@
 #define PROJECT_STORAGE_H
 #include "user.h"
 #include "StorageDevice.h"
+#include "Storable.h"
 enum StoringType {
     UserType
 };
@@ -15,9 +16,9 @@ class Storage {
     StorageDevice device;
     public:
         Storage();
-        virtual int add(StoringType Type, void* item);
-        virtual void* retrieve(StoringType Type, int identifier);
-        virtual int update(StoringType Type, void* identifier);
+        virtual int add(StoringType Type, Storable* storable);
+        virtual void* retrieve(StoringType Type, Storable* storable);
+        virtual int update(StoringType Type, Storable* storable);
 };
 
 
