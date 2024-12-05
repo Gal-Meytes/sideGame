@@ -15,10 +15,10 @@ class Storage {
     protected:
     StorageDevice device;
     public:
-        Storage();
-        virtual int add(StoringType Type, Storable* storable);
-        virtual void* retrieve(StoringType Type, Storable* storable);
-        virtual int update(StoringType Type, Storable* storable);
+        Storage(std::string directory);
+        virtual int add(StoringType Type, Storable* item);
+        virtual void* retrieve(StoringType Type, Storable* item);
+        virtual int update(StoringType Type, Storable* item);
 };
 
 

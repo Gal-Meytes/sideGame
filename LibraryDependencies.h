@@ -13,4 +13,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+// should we assume 64 bit or 32 bit?
+// the code of FileStorageDevice depends on it
+// important: -D_FILE_OFFSET_BITS=64
+// or just use define
+// we want to support all file sizes
 #endif //PROJECT_LIBRARYDEPENDENCIES_H
