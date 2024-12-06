@@ -9,12 +9,13 @@
 #include "LibraryDependencies.h"
 #include "Storable.h"
 
-class User :Storable {
+class User : public Storable {
 private:
-    int userID;
-    std::vector<std::string>& movieIds;
+    std::string userID;
+    std::vector<std::string> movieIds;
 public:
-    User(int userID, const std::vector<std::string>& movieIds);
+    virtual ~User() = default;
+    User(std::string userID, const std::vector<std::string>& movieIds);
     void insertMovies(std::vector<std::string>& movieIds);
     std::string getIdentity();
     std::string serialize();

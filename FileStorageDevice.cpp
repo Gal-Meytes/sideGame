@@ -3,9 +3,11 @@
 //
 #include "LibraryDependencies.h"
 #include "StorageDevice.h"
-#define MAGIC_STRING "keys"
-#define MAGIC_STRING_2 "offsets"
-#define MAGIC_STRING_3 "values"
+#define MAGIC_STRING "/keys.txt"
+#define MAGIC_STRING_2 "/offsets.txt"
+#define MAGIC_STRING_3 "/values.txt"
+#define IO_NUM_TRIES 1000;
+#define IO_SLEEP_MILLISECONDS 200;
 /***
  * FileStorageDevice handles storing and retrieving key-value data using a filesystem-based approach.
  * Data is stored across three files:
@@ -18,11 +20,11 @@
  * 2. Finding its index and using that to get the corresponding offset from OffsetFile.
  * 3. Using the offset to fetch the value from ValueFile.
  */
-class FileStorageDevice : StorageDevice {
+class FileStorageDevice : public StorageDevice {
 private:
-    int keyFd;
-    int offsetFd;
-    int valueFd;
+    int keyFd = -1;
+    int offsetFd = -1;
+    int valueFd = -1;
 public:
     FileStorageDevice(std::string directory) {
         std::string first_subdir = (directory + std::string(MAGIC_STRING));
@@ -34,37 +36,63 @@ public:
         this->valueFd = open(third_subdir.c_str(), O_CREAT | O_RDWR, 0777);
 
     }
+    ~FileStorageDevice() {
+        if (this->keyFd != -1) {
+            close(this->keyFd);
+        }
+        if (this->offsetFd != -1) {
+            close(this->offsetFd);
+        }
+        if (this->valueFd != -1) {
+            close(this->valueFd);
+        }
+    }
 
-    std::string* find(std::string key) {
+    std::string* find(std::string key) override {
         long long index = findKeyIndex(key);
         //unsigned type might be a problem
         if (index == -1) {
-            return NULL;
+            return nullptr;
         }
         off_t offset = getOffsetByIndex(index);
         lseek(valueFd, offset, SEEK_SET);
-        return nextStringInFile(valueFd, NULL);
+        return nextStringInFile(valueFd, nullptr);
     }
-    int add(std::string key, std::string value, std::string** error) {
+    int add(std::string key, std::string value, std::string** error) override {
+        // overide error pointer
         std::string* ignore;
-        if (error == NULL)
+        if (error == nullptr)
             error = &ignore;
+        //check if key already exists in index
         if (findKeyIndex(key) != -1) {
             *error = new std::string ("Key " + key + " already exists");
             return 0;
         }
-        appendToFile(keyFd, key);
 
+        if (appendToFile(keyFd, key) == -1)
+            return 0;
         off_t offset = appendToFile(valueFd, value);
+        if (offset == -1) {
+            *error = new std::string ("Value got lost. Memory is corrupt");
+            return 0;
+        }
         long long index = findKeyIndex(key);
-        changeOffsetFile(index, offset);
+        if (index == -1) {
+            *error = new std::string ("Key got lost. Memory is corrupt");
+            return 0;
+        }
+        index = changeOffsetFile(index, offset);
+        if (index == -1) {
+            *error = new std::string ("Failed to connect key-value files. Memory is corrupt");
+            return 0;
+        }
         return 1;
     }
     /*
      * currently just forgets last value, and points key to new value.
      * should improve on it.
      */
-    int update(std::string key, std::string value, std::string** error) {
+    int update(std::string key, std::string value, std::string** error) override {
         long long index = findKeyIndex(key);
         if (index == -1) {
             *error = new std::string ("Key " + key + " Not Found");
@@ -76,20 +104,31 @@ public:
     }
 
 private:
-//    void addKey(std::string key) {
-//        lseek(keyFd, 0, SEEK_END);
-//        write(keyFd, key.c_str(), key.length() + 1);
-//    }
+
     static off_t appendToFile(int fd, std::string value) {
+        ssize_t bytesWrote;
+        int numTries = IO_NUM_TRIES;
+        int sleepMilliseconds = IO_SLEEP_MILLISECONDS;
+
         off_t offset = lseek(fd, 0, SEEK_END);
-        write(fd, value.c_str(), value.length() + 1);
-        return offset;
+        bytesWrote = write(fd, value.c_str(), value.length() + 1);
+        if (bytesWrote == value.length() + 1)
+            return offset;
+        if (bytesWrote == -1) {
+            return -1;
+        }
+        for (; numTries; numTries--) {
+            if (ftruncate(fd, offset) != -1)
+                return -1;
+            usleep(sleepMilliseconds);
+        }
+        return -1;
     }
 
-    void changeOffsetFile(long long index, off_t offset) {
+    int changeOffsetFile(long long index, off_t offset) {
         off_t offsetWrite = sizeof (off_t) * index;
         lseek(offsetFd, offsetWrite,SEEK_SET);
-        write(offsetFd, &offset, sizeof (offset));
+        return (write(offsetFd, &offset, sizeof (offset)) == sizeof (offset) ? 1 : -1 );
     }
 
     off_t getOffsetByIndex(long long index) {
@@ -106,31 +145,31 @@ private:
         lseek(keyFd, 0, SEEK_SET);
         std::string* currString = nextStringInFile(keyFd, &error);
 
-        while(currString != NULL) {
-            if (!currString->compare(key))
+        while(currString != nullptr) {
+            if (strcmp(currString->c_str(),key.c_str()) == 0)
                 break;
             currString = nextStringInFile(keyFd, &error);
             i++;
         }
-        if (currString == NULL)
+        if (currString == nullptr)
             return -1;
         return i;
     }
     /*
-     appends a null terminator if doesn't appear before return - worth to mention.
+     appends a nullptr terminator if doesn't appear before return - worth to mention.
      error captures the reason the function unexpectedly failed, future updates -
      - should keep a logbook of the errors
 
      future updates - maybe use lseek seek_data
     */
      static std::string* nextStringInFile(int fd, int* error) {
-        int numTries = 1000;
-        int sleepMilliseconds = 200;
+        int numTries = IO_NUM_TRIES;
+        int sleepMilliseconds = IO_SLEEP_MILLISECONDS;
         std::vector<char> characters;
         char currChar;
         int ignored;
 
-        if (error == NULL)
+        if (error == nullptr)
             error = &ignored;
 
         while (true) {
@@ -140,8 +179,10 @@ private:
                 if (!currChar)
                     break;
             }
-            if (numRead == 0)
+            if (numRead == 0) {
                 *error = EOF;
+                break;
+            }
 
             //numRead == -1
             if (errno == EAGAIN || errno == EWOULDBLOCK) {
@@ -152,13 +193,11 @@ private:
                 numTries--;
                 usleep(sleepMilliseconds * 1000);
                 continue;
-            }
-            if (errno == EINTR)
+            } if (errno == EINTR)
                 continue;
-            continue;
         }
         if (characters.empty())
-            return NULL;
+            return nullptr;
         if (characters.back() != '\0')
             characters.push_back('\0');
         return new std::string(characters.begin(), characters.end());

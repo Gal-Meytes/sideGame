@@ -8,9 +8,10 @@
 
 class Storable {
 public:
-    Storable();
-    std::string getIdentity();
-    std::string serialize();
+    Storable() = default;
+
+    virtual std::string getIdentity() = 0;
+    virtual std::string serialize() = 0;
 };
 
 

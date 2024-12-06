@@ -12,13 +12,18 @@ enum StoringType {
 };
 
 class Storage {
-    protected:
-    StorageDevice device;
+    private:
+    StorageDevice* device;
     public:
-        Storage(std::string directory);
+        explicit Storage(StorageDevice* device);
         virtual int add(StoringType Type, Storable* item);
         virtual void* retrieve(StoringType Type, Storable* item);
         virtual int update(StoringType Type, Storable* item);
+private:
+    std::string getKey(StoringType storingType, Storable *item);
+    std::string storingTypeToString(StoringType storingType);
+//protected:
+//    void setDevice(StorageDevice device);
 };
 
 

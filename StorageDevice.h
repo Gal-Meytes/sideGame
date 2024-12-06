@@ -8,10 +8,11 @@
 
 class StorageDevice {
 public:
-    StorageDevice();
-    std::string* find(std::string key);
-    int add(std::string key, std::string value, std::string** error);
-    int update(std::string key, std::string value, std::string** error);
+    ~StorageDevice() = default;
+     StorageDevice() = default;
+    virtual std::string* find(std::string key) = 0;
+    virtual int add(std::string key, std::string value, std::string** error) = 0;
+    virtual int update(std::string key, std::string value, std::string** error) = 0;
 };
 
 
