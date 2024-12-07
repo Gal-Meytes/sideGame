@@ -12,5 +12,7 @@ file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 # Exclude CMakeCXXCompilerId.cpp and other unwanted files
 list(FILTER SOURCE_FILES EXCLUDE REGEX "CMakeCXXCompilerId.cpp")
 
-add_executable(my_executable ${SOURCE_FILES})
+# Exclude test.cpp
+list(FILTER SOURCE_FILES EXCLUDE REGEX "test.cpp")
 
+add_executable(my_executable ${SOURCE_FILES})

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 // should we assume 64 bit or 32 bit?
 // the code of FileStorageDevice depends on it
 // important: -D_FILE_OFFSET_BITS=64

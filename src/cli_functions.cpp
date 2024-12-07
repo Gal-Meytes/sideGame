@@ -4,9 +4,10 @@
 
 void add(int userId, std::vector<std::string>& movieIds, Storage& storage) {
     std::string key = std::to_string(userId);
-    std::string *user_serialized = storage.retrieve(UserType, key);
-    User* user = user_serialized == nullptr? (User *)nullptr : new User(*user_serialized);
-    if (user == nullptr) {
+    User tmp = User(key, nullptr);
+    std::string* userSerialized = (std::string*) storage.retrieve(UserType, &tmp);
+
+    if (userSerialized == nullptr) {
         // User doesn't exist, create a new one and add to storage
         User* newUser = new User(key, movieIds);
         if (!storage.add(UserType, newUser)) {
@@ -14,6 +15,7 @@ void add(int userId, std::vector<std::string>& movieIds, Storage& storage) {
         }
     } else {
         // User exists, update their movie list
+        User* user = new User(*userSerialized);
         user->insertMovies(movieIds);
         if (!storage.update(UserType, user)) {
             std::cerr << "Error: Failed to update user in storage.\n";

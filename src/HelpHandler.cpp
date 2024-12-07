@@ -16,3 +16,12 @@ void handleHelp() {
     std::cout << "  recommend [userId] [movieId]\n";
     std::cout << "  help\n";
 }
+
+std::string testhelp(){
+    std::string expectedHelpMessage = 
+        "  add [userId] [movieIds] ...\n";
+        "  recommend [userId] [movieId]\n";
+        "  help\n";
+        
+    return expectedHelpMessage;
+}

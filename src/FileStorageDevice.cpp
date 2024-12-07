@@ -3,7 +3,7 @@
 //
 #include "LibraryDependencies.h"
 #include "StorageDevice.h"
-#include <sstream>
+
 #define MAGIC_STRING "/keys.txt"
 #define MAGIC_STRING_2 "/offsets.txt"
 #define MAGIC_STRING_3 "/values.txt"
@@ -26,7 +26,6 @@ private:
     int keyFd = -1;
     int offsetFd = -1;
     int valueFd = -1;
-    std::string directory;
 public:
     FileStorageDevice(std::string directory) {
         std::string first_subdir = (directory + std::string(MAGIC_STRING));
@@ -36,7 +35,6 @@ public:
         this->keyFd = open(first_subdir.c_str(), O_CREAT | O_RDWR, 0777);
         this->offsetFd = open(second_subdir.c_str(), O_CREAT | O_RDWR, 0777);
         this->valueFd = open(third_subdir.c_str(), O_CREAT | O_RDWR, 0777);
-        this->directory = directory;
 
     }
     ~FileStorageDevice() {
@@ -52,18 +50,20 @@ public:
     }
 
     std::string* find(std::string key) override {
-        long long index = findKeyIndex1(key);
-    
+        long long index = findKeyIndex(key);
         //unsigned type might be a problem
         if (index == -1) {
             return nullptr;
         }
         off_t offset = getOffsetByIndex(index);
+        if (offset == -1) {
+            return nullptr;
+        }
         lseek(valueFd, offset, SEEK_SET);
         return nextStringInFile(valueFd, nullptr);
     }
     int add(std::string key, std::string value, std::string** error) override {
-        // override error pointer
+        // overide error pointer
         std::string* ignore;
         if (error == nullptr)
             error = &ignore;
@@ -73,7 +73,8 @@ public:
             return 0;
         }
 
-        if (appendToFile(keyFd, key) == -1)
+        off_t keyOffset = appendToFile(keyFd, key);
+        if (keyOffset == -1)
             return 0;
         off_t offset = appendToFile(valueFd, value);
         if (offset == -1) {
@@ -97,27 +98,36 @@ public:
      * should improve on it.
      */
     int update(std::string key, std::string value, std::string** error) override {
-        long long index = findKeyIndex1(key);
+        long long index = findKeyIndex(key);
         if (index == -1) {
             *error = new std::string ("Key " + key + " Not Found");
             return 0;
         }
         off_t valueOffset = appendToFile(valueFd, value);
+        if (valueOffset == -1) {
+            *error = new std::string ("Key found but unable to update value");
+            return 0;
+        }
         changeOffsetFile(index, valueOffset);
         return 1;
+    }
+    off_t getKey(off_t offset, std::string* buffer)  {
+        lseek(keyFd, offset, SEEK_SET);
+        int error;
+        std::string* tmp = nextStringInFile(keyFd, &error);
+        if (tmp == nullptr) {
+            *buffer = std::string();
+            return -1;
+        }
+        *buffer = *tmp;
+
+        if (error == EOF)
+            return -1;
+        return lseek(keyFd, 0, SEEK_CUR);
     }
 
 private:
 
-    std::vector<std::string> split(std::string &s, char delimiter) {
-        std::vector<std::string> parts;
-        std::stringstream ss(s);
-        std::string item;
-        while (std::getline(ss, item, delimiter)) {
-            parts.push_back(item);
-        }
-        return parts;
-    }
     static off_t appendToFile(int fd, std::string value) {
         ssize_t bytesWrote;
         int numTries = IO_NUM_TRIES;
@@ -140,6 +150,7 @@ private:
 
     int changeOffsetFile(long long index, off_t offset) {
         off_t offsetWrite = sizeof (off_t) * index;
+        //continue from here!!!!!
         lseek(offsetFd, offsetWrite,SEEK_SET);
         return (write(offsetFd, &offset, sizeof (offset)) == sizeof (offset) ? 1 : -1 );
     }
@@ -151,22 +162,6 @@ private:
         //future updates - should check for failure of read.
         read(offsetFd, &returnVal, sizeof (returnVal));
         return returnVal;
-    }
-    long long findKeyIndex1(std::string key) {
-        int error = ~EOF;
-        long long i = 0;
-        lseek(keyFd, 0, SEEK_SET);
-        std::string* currString = nextStringInFile(keyFd, &error);
-        while(currString != nullptr) {
-            bool n = split( *currString, ' ')[1].c_str() == key.c_str();
-            if (strcmp(split( *currString, ' ')[1].c_str(),key.c_str()) == 0)
-                break;
-            currString = nextStringInFile(keyFd, &error);
-            i++;
-        }
-        if (currString == nullptr)
-            return -1;
-        return i;
     }
     long long findKeyIndex(std::string key) {
         int error = ~EOF;
@@ -185,13 +180,13 @@ private:
         return i;
     }
     /*
-     Appends a nullptr terminator if doesn't appear before return - worth to mention.
+     appends a nullptr terminator if doesn't appear before return - worth to mention.
      error captures the reason the function unexpectedly failed, future updates -
      - should keep a logbook of the errors
 
      future updates - maybe use lseek seek_data
     */
-     static std::string* nextStringInFile(int fd, int* error) {
+    static std::string* nextStringInFile(int fd, int* error) {
         int numTries = IO_NUM_TRIES;
         int sleepMilliseconds = IO_SLEEP_MILLISECONDS;
         std::vector<char> characters;
@@ -231,41 +226,4 @@ private:
             characters.push_back('\0');
         return new std::string(characters.begin(), characters.end());
     }
-    
-    std::string getCurrentString(){
-        std::ifstream file;
-        file.open(directory + std::string(MAGIC_STRING_3), std::ios::in | std::ios::binary);
-        if (!file.is_open()) {
-            return "";
-        }
-        int zeros = 0;
-        char c;
-        while(zeros < iteratorPos){
-            file.get(c);
-            if (c == '\0')
-                zeros++;
-        }
-        std::string s = "";
-        while(file.get(c) && c != EOF && c != '\0'){
-            s.push_back(c);
-        }
-        file.close();
-        return s;
-    }
-
-    // For iterating through the storage device
-    std::string begin() override {
-        this->iteratorPos = 0;
-        return getCurrentString();
-    }
-
-    bool hitEOF() override {
-        return getCurrentString().empty();
-    }
-
-    std::string next() override {
-        this->iteratorPos++;
-        return getCurrentString();
-    }
-
 };

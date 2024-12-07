@@ -7,6 +7,12 @@ User::User(std::string userID, const std::vector<std::string>& movieIds) {
     this->userID = userID;
     this->movieIds = movieIds;
 }
+User::User(std::string userID, const std::vector<std::string>* movieIds) {
+    this->userID = userID;
+    if (movieIds != nullptr) {
+       this->movieIds = *movieIds;
+    }
+}
 void User::insertMovies(std::vector<std::string> &movieIds) {
     //assumes instance movie vector is initialized
     for (std::string movie : movieIds) {
@@ -30,9 +36,12 @@ User::User(std::string serialized_user) {
     
     // Extract the movie IDs from the tokens
     std::vector<std::string> movieIds;
-    for (size_t i = 4; i < tokens.size(); i++) {
+    for (size_t i = 4; i < tokens.size() - 1; i++) {
         movieIds.push_back(tokens[i]);
     }
+//    for (std::string movie : movieIds) {
+//        std::cout << movie << std::endl;
+//    }
     
     // Create the new User object
     this->userID = userID;

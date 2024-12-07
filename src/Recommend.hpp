@@ -12,6 +12,6 @@
 
 int calculateSimilarity(const std::vector<std::string>& userA, const std::vector<std::string>& userB);
 
-std::string recommend(Storage& storage, const std::vector<std::string>& args);
+std::string* recommend(Storage& storage, const std::vector<std::string>& args);
 
 #endif // RECOMMEND_HPP

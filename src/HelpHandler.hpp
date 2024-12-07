@@ -17,13 +17,6 @@
  * provided by the user.
  */
 void handleHelp();
-
-/**
- * @brief Displays help information.
- *
- * This function displays the help information to the user, providing guidance
- * on how to use the application.
- */
-void help();
+std::string testhelp();
 
 #endif // HELP_HANDLER_H
