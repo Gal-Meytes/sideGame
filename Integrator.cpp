@@ -29,7 +29,8 @@ void integrationCommend(const std::string& input) {
     std::string command;
     iss >> command;
 
-    StorageDevice* device = new FileStorageDevice("/home/matan/Metflix/Data");
+    const char* dataPath = "/app/Data";
+    StorageDevice* device = new FileStorageDevice(dataPath);
     Storage storage(device);
     Storage& storageRef = storage;
 
