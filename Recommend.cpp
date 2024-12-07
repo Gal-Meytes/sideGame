@@ -35,32 +35,19 @@ int calculateSimilarity(const std::vector<std::string>& userA, const std::vector
 }
 
 std::string recommend(Storage& storage, const std::vector<std::string>& args) {
-    if (args.size() != 2) {
-        std::cerr << "Error: 'recommend' command requires exactly 2 arguments: [userid] [movieid]." << std::endl;
-        return;
-    }
+   
 
     std::string userId = args[0];
     std::string movieId = args[1];
 
     // Retrieve user data
     Storable* storableUser = storage.retrieve(UserType, userId);
-    if (storableUser == nullptr) {
-        std::cerr << "Error: User ID " << userId << " not found." << std::endl;
-        return;
-    }
+   
 
     User* user = dynamic_cast<User*>(storableUser);
-    if (user == nullptr) {
-        std::cerr << "Error: Retrieved object is not of type User." << std::endl;
-        return;
-    }
+    
 
     const auto& userMovies = user->getMovies();
-    if (userMovies.empty()) {
-        std::cerr << "Error: User has no movies." << std::endl;
-        return;
-    }
 
 
     // Find similar users who have watched the given movie
