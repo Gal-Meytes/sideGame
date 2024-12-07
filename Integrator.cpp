@@ -46,6 +46,6 @@ void integrationCommend(const std::string& input) {
     if (command == "add") {
         handleAdd(args, storageRef);
     } else if (command == "recommend") {
-        handleReccomend(args);
+        handleReccomend(storageRef, args);
     }
 }

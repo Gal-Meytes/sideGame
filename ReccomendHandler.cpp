@@ -1,5 +1,5 @@
 #include "ReccomendHandler.hpp"
-
+#include "Recommend.hpp"
 /**
  * @brief Handles the 'reccomend' command by delegating to the reccomend function.
  * 
@@ -11,19 +11,10 @@
  */
 
 
-void reccomend(const std::string& userId, const std::string movieId) {
-    std::cout << "Recommending movies for user " << userId << " based on movie " << movieId << "." << std::endl;
-}
-
-void handleReccomend(const std::vector<std::string>& args) {
+void handleReccomend(Storage& storage, const std::vector<std::string>& args) {
     if (args.size() == 2) {
-        
-         // Extract user ID and movie ID
-        std::string userId = args[0];
-        std::string movieId = args[1];
+    std::cout << "Recommending movies for user " << args[0] << " based on movie " << args[1] << ".\n" << recommend(storage, args) << std::endl;
 
-        // Delegate the operation to the reccomend function
-        reccomend(userId, movieId);
     }
 }
 

@@ -16,9 +16,11 @@ private:
 public:
     virtual ~User() = default;
     User(std::string userID, const std::vector<std::string>& movieIds);
+    User::User(std::string serialized_user);
     void insertMovies(std::vector<std::string>& movieIds);
     std::string getIdentity();
     std::string serialize();
+    std::vector<std::string> getMovies();
 };
 
 
