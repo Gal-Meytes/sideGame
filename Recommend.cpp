@@ -15,6 +15,17 @@
 #include <iostream>
 #include "Recommend.hpp"
 
+
+
+bool isInVector(std::vector<std::string> vec, std::string str) {
+    for (const auto& entry : vec) {
+        if (entry.compare(str) == 0) {
+            return true;
+        }
+    }
+    return false;
+
+}
 /**
  * @brief Calculates the similarity between two users based on shared movies.
  * 
@@ -27,43 +38,42 @@
 int calculateSimilarity(const std::vector<std::string>& userA, const std::vector<std::string>& userB) {
     int commonMovies = 0;
     for (const auto& movie : userA) {
-        if (std::find(userB.begin(), userB.end(), movie) != userB.end()) {
-            ++commonMovies;
+        if (isInVector(userB, movie)) {
+            commonMovies++;
         }
     }
     return commonMovies;
 }
 
 std::string recommend(Storage& storage, const std::vector<std::string>& args) {
-   
 
     std::string userId = args[0];
     std::string movieId = args[1];
 
     // Retrieve user data
-    Storable* storableUser = storage.retrieve(UserType, userId);
-   
+    std::string *serializedUser =  storage.retrieve(UserType, userId);
 
-    User* user = dynamic_cast<User*>(storableUser);
+    User* user = new User(*serializedUser);
     
+
 
     const auto& userMovies = user->getMovies();
 
-
     // Find similar users who have watched the given movie
     std::unordered_map<std::string, int> similarities; // Map userID -> similarity score
-    for (auto it = storage.begin(); it != storage.end(); ++it) {
-        const auto& [serialized_other_user, _other_user] = *it;
-        User other_user = User(serialized_other_user);
-        if (other_user.getIdentity() != userId && std::find(other_user.getMovies().begin(), other_user.getMovies().end(), movieId) != other_user.getMovies().end()) {
-            similarities[other_user.getIdentity()] = calculateSimilarity(userMovies, other_user.getMovies());
+    for (auto it = storage.begin(); !storage.hitEOF(); it = storage.next()) {
+        User *otherUser = new User(it);
+        std::string otherUserId = otherUser->getIdentity();
+        if (otherUserId != user->getIdentity() && isInVector(otherUser->getMovies(), movieId)) {
+            similarities[otherUserId] = calculateSimilarity(userMovies, otherUser->getMovies());
         }
     }
-
+  
     // Score other movies based on similar users
     std::unordered_map<std::string, int> movieScores; // Map movieID -> relevance score
     for (const auto& [otherUserId, similarity] : similarities) {
-        Storable* otherStorableUser = storage.retrieve(UserType, otherUserId);
+        std::string *serializedOtherUser =  storage.retrieve(UserType, otherUserId);
+        Storable* otherStorableUser = new User(*serializedOtherUser);
         User* otherUser = dynamic_cast<User*>(otherStorableUser);
         if (otherUser == nullptr) {
             continue;
@@ -71,7 +81,10 @@ std::string recommend(Storage& storage, const std::vector<std::string>& args) {
 
         const auto& otherUserMovies = otherUser->getMovies();
         for (const auto& movie : otherUserMovies) {
-            if (std::find(userMovies.begin(), userMovies.end(), movie) == userMovies.end()) { // Exclude movies already watched
+            if (movie.compare(movieId) == 0) {
+                continue;
+            }
+            if (!isInVector(userMovies, movie) && movie.compare(movieId) != 0) { // Exclude movies already watched by user and movieId
                 movieScores[movie] += similarity;
             }
         }
@@ -85,9 +98,12 @@ std::string recommend(Storage& storage, const std::vector<std::string>& args) {
               });
 
     // Output top 10 recommendations
-    std::string recommendation = "";
+    std::string recommendation = sortedMovies[0].first;
     int count = 0;
     for (const auto& [movie, score] : sortedMovies) {
+        if(movie.compare(recommendation) == 0) {
+            continue;
+        }
         recommendation += " " + movie;
         if (++count >= 10) break;
     }

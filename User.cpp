@@ -30,7 +30,7 @@ User::User(std::string serialized_user) {
     
     // Extract the movie IDs from the tokens
     std::vector<std::string> movieIds;
-    for (size_t i = 3; i < tokens.size(); i++) {
+    for (size_t i = 4; i < tokens.size(); i++) {
         movieIds.push_back(tokens[i]);
     }
     

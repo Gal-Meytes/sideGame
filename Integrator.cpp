@@ -29,7 +29,7 @@ void integrationCommend(const std::string& input) {
     std::string command;
     iss >> command;
 
-    const char* dataPath = "/home/matan/Metflix/Data";
+    const char* dataPath = "/home/zviazmon/Bar Ilan/Computer Sience/Advanced programming/things";
     StorageDevice* device = new FileStorageDevice(dataPath);
     Storage storage(device);
     Storage& storageRef = storage;

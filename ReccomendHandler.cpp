@@ -13,7 +13,7 @@
 
 void handleReccomend(Storage& storage, const std::vector<std::string>& args) {
     if (args.size() == 2) {
-    std::cout << "Recommending movies for user " << args[0] << " based on movie " << args[1] << ".\n" << recommend(storage, args) << std::endl;
+    std::cout << recommend(storage, args) << std::endl;
 
     }
 }

@@ -4,9 +4,8 @@
 
 void add(int userId, std::vector<std::string>& movieIds, Storage& storage) {
     std::string key = std::to_string(userId);
-    Storable* storable = storage.retrieve(UserType, key);
-    User* user = dynamic_cast<User*>(storable);
-
+    std::string *user_serialized = storage.retrieve(UserType, key);
+    User* user = user_serialized == nullptr? (User *)nullptr : new User(*user_serialized);
     if (user == nullptr) {
         // User doesn't exist, create a new one and add to storage
         User* newUser = new User(key, movieIds);
