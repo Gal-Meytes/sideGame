@@ -2,6 +2,11 @@
 #include "AddHandler.hpp"
 #include "HelpHandler.hpp"
 #include "ReccomendHandler.hpp"
+#include "StorageDevice.h"
+#include "FileStorageDevice.cpp" // Use .h, not .cpp
+#include "Storage.h"
+
+
 
 /**
  * @brief Processes a given command input and executes the corresponding function.
@@ -24,6 +29,10 @@ void integrationCommend(const std::string& input) {
     std::string command;
     iss >> command;
 
+    StorageDevice* device = new FileStorageDevice("/home/matan/Metflix/Data");
+    Storage storage(device);
+    Storage& storageRef = storage;
+
     std::vector<std::string> args;
     std::string arg;
     while (iss >> arg) {
@@ -32,8 +41,9 @@ void integrationCommend(const std::string& input) {
 
     if (command == "help") {
         handleHelp();
-    } else if (command == "add") {
-        handleAdd(args);
+    }
+    if (command == "add") {
+        handleAdd(args, storageRef);
     } else if (command == "recommend") {
         handleReccomend(args);
     }

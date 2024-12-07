@@ -13,12 +13,24 @@ int Storage::add(StoringType storingType, Storable *item) {
     return device->add(key, value, nullptr);
 }
 
-void *Storage::retrieve(StoringType storingType, Storable *item) {
-    if (item == nullptr)
+Storable* Storage::retrieve(StoringType storingType, const std::string& key) {
+    void* rawData = device->find(key);
+
+    if (rawData == nullptr) {
+        return nullptr; // Not found
+    }
+
+    // Use dynamic_cast to safely convert void* to Storable*
+    Storable* storable = dynamic_cast<Storable*>(static_cast<Storable*>(rawData));
+
+    if (!storable) {
+        std::cerr << "Error: Retrieved object is not of type Storable.\n";
         return nullptr;
-    std::string key = getKey(storingType, item);
-    return device->find(key);
+    }
+
+    return storable;
 }
+
 
 int Storage::update(StoringType storingType, Storable *item) {
     if (item == nullptr)

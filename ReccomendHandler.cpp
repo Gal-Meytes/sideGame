@@ -9,6 +9,12 @@
  * @param args A vector of strings containing the arguments for the 'reccomend' command.
  *             The first argument should be the user ID and the second argument should be the movie ID.
  */
+
+
+void reccomend(const std::string& userId, const std::string movieId) {
+    std::cout << "Recommending movies for user " << userId << " based on movie " << movieId << "." << std::endl;
+}
+
 void handleReccomend(const std::vector<std::string>& args) {
     if (args.size() == 2) {
         
@@ -20,3 +26,4 @@ void handleReccomend(const std::vector<std::string>& args) {
         reccomend(userId, movieId);
     }
 }
+

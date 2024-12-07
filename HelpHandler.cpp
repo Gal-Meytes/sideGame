@@ -12,5 +12,7 @@
 #include "HelpHandler.hpp"
 
 void handleHelp() {
-    help();
+    std::cout << "  add [userId] [movieIds] ...\n";
+    std::cout << "  recommend [userId] [movieId]\n";
+    std::cout << "  help\n";
 }

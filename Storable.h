@@ -10,6 +10,7 @@ class Storable {
 public:
     Storable() = default;
 
+    virtual ~Storable() = default; // Virtual destructor for safe polymorphism
     virtual std::string getIdentity() = 0;
     virtual std::string serialize() = 0;
 };

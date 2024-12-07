@@ -8,6 +8,7 @@
  */
 #ifndef HELP_HANDLER_H
 #define HELP_HANDLER_H
+#include <iostream>
 
 /**
  * @brief Handles the help command.
