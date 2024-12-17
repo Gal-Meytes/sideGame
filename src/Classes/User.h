@@ -22,6 +22,8 @@ public:
     std::string getIdentity();
     std::string serialize();
     std::vector<std::string> getMovies();
+    bool hasWatchedMovie(std::string movieId);
+    void deleteMovie(std::string movieId);
 };
 
 

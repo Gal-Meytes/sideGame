@@ -3,9 +3,9 @@
 //
 
 #include "StdCommandFactory.hpp"
-StdCommandFactory::StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream) {
-    AddCommand* addCommand = new AddCommand(storage, outputStream, errorStream);
-    RecommendCommand* recommendCommand = new RecommendCommand(storage, outputStream, errorStream);
+StdCommandFactory::StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream, IResponseProtocol* responseProtocol) {
+    AddCommand* addCommand = new AddCommand(storage, outputStream, errorStream, responseProtocol);
+    RecommendCommand* recommendCommand = new RecommendCommand(storage, outputStream, errorStream, responseProtocol);
 
     this->allCommands.push_back(addCommand);
     this->allCommands.push_back(recommendCommand);

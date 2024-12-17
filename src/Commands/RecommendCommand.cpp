@@ -25,10 +25,11 @@ static int calculateSimilarity(const std::vector<std::string>& userA, const std:
 }
 RecommendCommand::RecommendCommand(Storage *storage,
                                    OutputStream *outputStream,
-                                   ErrorStream *errorStream) {
+                                   ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
     this->storage = storage;
     this->outputStream = outputStream;
     this->errorStream = errorStream;
+    this->responseProtocol = responseProtocol;
 }
 void RecommendCommand::execute(std::vector<std::string> arguments) {
     std::string userId = arguments[0];

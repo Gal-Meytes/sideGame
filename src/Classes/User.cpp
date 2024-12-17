@@ -3,6 +3,7 @@
 //
 #include <sstream>
 #include "../Classes/User.h"
+#include <algorithm>
 User::User(std::string userID, const std::vector<std::string>& movieIds) {
     this->userID = userID;
     this->movieIds = movieIds;
@@ -64,4 +65,15 @@ std::string User::serialize() {
 }
 std::string User::getIdentity() {
     return std::string(userID);
+}
+bool User::hasWatchedMovie(std::string otherMovieId) {
+    for (std::string movieId : movieIds) {
+        if (movieId == otherMovieId)
+            return true;
+    }
+    return false;
+}
+void User::deleteMovie(std::string movieId) {
+    if (!hasWatchedMovie(movieId))
+         movieIds.erase(std::remove(movieIds.begin(), movieIds.end(), movieId), movieIds.end());
 }

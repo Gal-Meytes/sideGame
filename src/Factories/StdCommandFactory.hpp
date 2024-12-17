@@ -11,12 +11,13 @@
 #include "../Classes/Storage.h"
 #include "../Interfaces/OutputStream.hpp"
 #include "../Interfaces/ErrorStream.hpp"
+#include "../Interfaces/IResponseProtocol.hpp"
 
 class StdCommandFactory : public ICommandFactory{
 private:
     std::vector<ICommand*> allCommands;
 public:
-    explicit StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream);
+    explicit StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream, IResponseProtocol* iResponseProtocol);
     virtual std::unordered_map<std::string, ICommand*>* commands() override;
 };
 

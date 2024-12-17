@@ -4,12 +4,16 @@
 
 #include "AddCommand.hpp"
 AddCommand::AddCommand(Storage* storage, OutputStream *outputStream,
-                       ErrorStream *errorStream) {
+                       ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
     this->storage = storage;
     this->outputStream = outputStream;
     this->errorStream = errorStream;
+    this->responseProtocol = responseProtocol;
 }
 void AddCommand::execute(std::vector<std::string> arguments) {
+    if (arguments.size() < 2) {
+        responseProtocol->BadRequest();
+    }
 
     int userId = std::stoi(arguments[0]);
     std::vector<std::string> movieIds(arguments.begin() + 1, arguments.end());

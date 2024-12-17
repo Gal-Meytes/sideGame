@@ -21,6 +21,7 @@
 #include "Factories/StdCommandFactory.hpp"
 #include "Factories/IStorageDeviceFactory.hpp"
 #include "Factories/FileStorageDeviceFactory.hpp"
+#include "Factories/StreamHTTPResponseProtocolFactory.hpp"
 #include "Classes/App.hpp"
 int main() {
     std::string input;
@@ -35,8 +36,10 @@ int main() {
         ErrorStream* errorStream = ioFactory->fabricateErrorStream();
         IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
         Storage* storage = new Storage(storageDeviceFactory->storageDevice());
+        IResponseProtocolFactory* iResponseProtocolFactory = new StreamHTTPResponseProtocolFactory(outputStream);
+        IResponseProtocol* responseProtocol = iResponseProtocolFactory->fabricateResponseProtocol();
 
-        ICommandFactory* commandFactory = new StdCommandFactory(storage, outputStream, errorStream);
+        ICommandFactory* commandFactory = new StdCommandFactory(storage, outputStream, errorStream, responseProtocol);
         App* app = new App(commandFactory->commands(), inputStream);
         app->run();
 //        integrationCommend(input);
