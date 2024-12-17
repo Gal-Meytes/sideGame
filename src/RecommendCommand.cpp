@@ -1,32 +1,9 @@
-/**
- * @file Recommend.cpp
- * @brief Movie recommendation system.
- * @version 0.1
- * @date 2024-12-05
- * 
- * @copyright Copyright (c) 2024
- */
-
-#include <unordered_set>
+#include "RecommendCommand.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <iostream>
-#include "Recommend.hpp"
-#include "StorageIterator.hpp"
-
-/**
- * @brief Calculates the similarity between two users based on shared movies.
- * 
- * This function takes two unordered sets of strings representing the movies watched by two users.
- * It calculates the number of common movies between the two users and returns the similarity score.
- * 
- * @param userA The unordered set of strings representing the movies watched by user A.
- * @param userB The unordered set of strings representing the movies watched by user B.
- */
-
-bool isInVector(std::vector<std::string> vec, std::string str) {
+static bool isInVector(std::vector<std::string> vec, std::string str) {
     for (const auto& entry : vec) {
         if (entry.compare(str) == 0) {
             return true;
@@ -36,7 +13,7 @@ bool isInVector(std::vector<std::string> vec, std::string str) {
 
 }
 
-int calculateSimilarity(const std::vector<std::string>& userA, const std::vector<std::string>& userB) {
+static int calculateSimilarity(const std::vector<std::string>& userA, const std::vector<std::string>& userB) {
     int commonMovies = 0;
     for (const auto& movie : userA) {
         if (isInVector(userB, movie)) {
@@ -45,19 +22,23 @@ int calculateSimilarity(const std::vector<std::string>& userA, const std::vector
     }
     return commonMovies;
 }
-
-std::string* recommend(Storage& storage, const std::vector<std::string>& args) {
-
-
-    std::string userId = args[0];
-    std::string movieId = args[1];
+RecommendCommand::RecommendCommand(Storage *storage,
+                                   OutputStream *outputStream,
+                                   ErrorStream *errorStream) {
+    this->storage = storage;
+    this->outputStream = outputStream;
+    this->errorStream = errorStream;
+}
+void RecommendCommand::execute(std::vector<std::string> arguments) {
+    std::string userId = arguments[0];
+    std::string movieId = arguments[1];
 
     // Retrieve user data
 
     User tmp = User(userId, nullptr);
-    std::string* storedUser = storage.retrieve(UserType, &tmp);
+    std::string* storedUser = storage->retrieve(UserType, &tmp);
     if (storedUser == nullptr)
-        return nullptr;
+        return;
 
     User* user = new User(*storedUser);
 
@@ -67,7 +48,7 @@ std::string* recommend(Storage& storage, const std::vector<std::string>& args) {
 
     // Find similar users who have watched the given movie
     std::unordered_map<std::string, int> similarities; // Map userID -> similarity score
-    StorageIterator userIterator = StorageIterator(&storage, UserType);
+    StorageIterator userIterator = StorageIterator(storage, UserType);
     std::string* serialized_other_user = userIterator.getNext();
     while (serialized_other_user) {
         User other_user = User(*serialized_other_user);
@@ -81,7 +62,7 @@ std::string* recommend(Storage& storage, const std::vector<std::string>& args) {
     std::unordered_map<std::string, int> movieScores; // Map movieID -> relevance score
     for (const auto& [otherUserId, similarity] : similarities) {
         User tmp = User(otherUserId, nullptr);
-        std::string* otherStoredUser = storage.retrieve(UserType, &tmp);
+        std::string* otherStoredUser = storage->retrieve(UserType, &tmp);
         if (otherStoredUser == nullptr) {
             continue;
         }
@@ -113,6 +94,12 @@ std::string* recommend(Storage& storage, const std::vector<std::string>& args) {
         if (++count >= 10) break;
     }
     recommendation = recommendation.substr(1);
-    std::string* returnedRecommendation = new std::string(recommendation);
-    return returnedRecommendation;
+    outputStream->writeLine(recommendation);
+}
+
+void RecommendCommand::printCommand() {
+    outputStream->writeLine("  recommend [userId] [movieId]\n");
+}
+std::string RecommendCommand::name() {
+    return "recommend";
 }

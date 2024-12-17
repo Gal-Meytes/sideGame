@@ -1,43 +1,53 @@
 //
 // Created by Surfer Boy on 30/11/2024.
 //
-#include "LibraryDependencies.h"
-#include "StorageDevice.h"
+
 
 #define MAGIC_STRING "/keys.txt"
 #define MAGIC_STRING_2 "/offsets.txt"
 #define MAGIC_STRING_3 "/values.txt"
 #define IO_NUM_TRIES 1000;
 #define IO_SLEEP_MILLISECONDS 200;
-/***
- * FileStorageDevice handles storing and retrieving key-value data using a filesystem-based approach.
- * Data is stored across three files:
- * - KeyFile: Contains keys as strings.
- * - OffsetFile: Contains offsets (as `off_t`) corresponding to value locations in ValueFile.
- * - ValueFile: Contains values as strings.
- *
- * Retrieval involves:
- * 1. Locating the key in KeyFile.
- * 2. Finding its index and using that to get the corresponding offset from OffsetFile.
- * 3. Using the offset to fetch the value from ValueFile.
- */
-class FileStorageDevice : public StorageDevice {
-private:
-    int keyFd = -1;
-    int offsetFd = -1;
-    int valueFd = -1;
-public:
-    FileStorageDevice(std::string directory) {
-        std::string first_subdir = (directory + std::string(MAGIC_STRING));
-        std::string second_subdir = (directory + std::string(MAGIC_STRING_2));
-        std::string third_subdir = (directory + std::string(MAGIC_STRING_3));
 
-        this->keyFd = open(first_subdir.c_str(), O_CREAT | O_RDWR, 0777);
-        this->offsetFd = open(second_subdir.c_str(), O_CREAT | O_RDWR, 0777);
-        this->valueFd = open(third_subdir.c_str(), O_CREAT | O_RDWR, 0777);
+#include "LibraryDependencies.h"
+#include "FileStorageDevice.hpp"
 
+
+FileStorageDevice::FileStorageDevice(std::string directory) {
+    std::string first_subdir = (directory + std::string(MAGIC_STRING));
+    std::string second_subdir = (directory + std::string(MAGIC_STRING_2));
+    std::string third_subdir = (directory + std::string(MAGIC_STRING_3));
+
+    // Check if directories exist or create them
+    if (mkdir(directory.c_str(), 0777) == -1 && errno != EEXIST) {
+        // Handle directory creation failure
+        std::cerr << "Error creating directory: " << directory << std::endl;
+        return;
     }
-    ~FileStorageDevice() {
+
+    // Open files and check for errors
+    this->keyFd = open(first_subdir.c_str(), O_CREAT | O_RDWR, 0644);
+    if (this->keyFd == -1) {
+        std::cerr << "Error opening key file: " << first_subdir << std::endl;
+        return;
+    }
+
+    this->offsetFd = open(second_subdir.c_str(), O_CREAT | O_RDWR, 0644);
+    if (this->offsetFd == -1) {
+        std::cerr << "Error opening offset file: " << second_subdir << std::endl;
+        close(this->keyFd);  // Clean up previously opened file
+        return;
+    }
+
+    this->valueFd = open(third_subdir.c_str(), O_CREAT | O_RDWR, 0644);
+    if (this->valueFd == -1) {
+        std::cerr << "Error opening value file: " << third_subdir << std::endl;
+        close(this->keyFd);
+        close(this->offsetFd);  // Clean up previously opened files
+        return;
+    }
+}
+FileStorageDevice::~FileStorageDevice() {
         if (this->keyFd != -1) {
             close(this->keyFd);
         }
@@ -49,7 +59,7 @@ public:
         }
     }
 
-    std::string* find(std::string key) override {
+    std::string* FileStorageDevice::find(std::string key) {
         long long index = findKeyIndex(key);
         //unsigned type might be a problem
         if (index == -1) {
@@ -62,7 +72,7 @@ public:
         lseek(valueFd, offset, SEEK_SET);
         return nextStringInFile(valueFd, nullptr);
     }
-    int add(std::string key, std::string value, std::string** error) override {
+    int FileStorageDevice::add(std::string key, std::string value, std::string** error) {
         // overide error pointer
         std::string* ignore;
         if (error == nullptr)
@@ -97,7 +107,7 @@ public:
      * currently just forgets last value, and points key to new value.
      * should improve on it.
      */
-    int update(std::string key, std::string value, std::string** error) override {
+    int FileStorageDevice::update(std::string key, std::string value, std::string** error) {
         long long index = findKeyIndex(key);
         if (index == -1) {
             *error = new std::string ("Key " + key + " Not Found");
@@ -111,7 +121,7 @@ public:
         changeOffsetFile(index, valueOffset);
         return 1;
     }
-    off_t getKey(off_t offset, std::string* buffer)  {
+    off_t FileStorageDevice::getKey(off_t offset, std::string* buffer)  {
         lseek(keyFd, offset, SEEK_SET);
         int error;
         std::string* tmp = nextStringInFile(keyFd, &error);
@@ -126,9 +136,7 @@ public:
         return lseek(keyFd, 0, SEEK_CUR);
     }
 
-private:
-
-    static off_t appendToFile(int fd, std::string value) {
+     off_t FileStorageDevice::appendToFile(int fd, std::string value) {
         ssize_t bytesWrote;
         int numTries = IO_NUM_TRIES;
         int sleepMilliseconds = IO_SLEEP_MILLISECONDS;
@@ -148,14 +156,14 @@ private:
         return -1;
     }
 
-    int changeOffsetFile(long long index, off_t offset) {
+    int FileStorageDevice::changeOffsetFile(long long index, off_t offset) {
         off_t offsetWrite = sizeof (off_t) * index;
         //continue from here!!!!!
         lseek(offsetFd, offsetWrite,SEEK_SET);
         return (write(offsetFd, &offset, sizeof (offset)) == sizeof (offset) ? 1 : -1 );
     }
 
-    off_t getOffsetByIndex(long long index) {
+    off_t FileStorageDevice::getOffsetByIndex(long long index) {
         size_t offsetRead = sizeof (off_t) * index;
         lseek(offsetFd, offsetRead, SEEK_SET);
         off_t returnVal;
@@ -163,7 +171,9 @@ private:
         read(offsetFd, &returnVal, sizeof (returnVal));
         return returnVal;
     }
-    long long findKeyIndex(std::string key) {
+    long long FileStorageDevice::findKeyIndex(std::string key) {
+        if (key.empty())
+            return -1;
         int error = ~EOF;
         long long i = 0;
         lseek(keyFd, 0, SEEK_SET);
@@ -186,7 +196,7 @@ private:
 
      future updates - maybe use lseek seek_data
     */
-    static std::string* nextStringInFile(int fd, int* error) {
+    std::string* FileStorageDevice::nextStringInFile(int fd, int* error) {
         int numTries = IO_NUM_TRIES;
         int sleepMilliseconds = IO_SLEEP_MILLISECONDS;
         std::vector<char> characters;
@@ -226,4 +236,3 @@ private:
             characters.push_back('\0');
         return new std::string(characters.begin(), characters.end());
     }
-};
