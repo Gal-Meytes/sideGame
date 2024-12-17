@@ -4,11 +4,11 @@
 
 #ifndef MY_PROJECT_ISTORAGEDEVICEFACTORY_HPP
 #define MY_PROJECT_ISTORAGEDEVICEFACTORY_HPP
-#include "StorageDevice.h"
+#include "../Interfaces/StorageDevice.h"
 
 class IStorageDeviceFactory {
 public:
-    virtual StorageDevice* storageDevice();
+    virtual StorageDevice* storageDevice() = 0;
 };
 
 

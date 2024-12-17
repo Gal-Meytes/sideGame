@@ -14,10 +14,10 @@ StdCommandFactory::StdCommandFactory(Storage* storage, OutputStream* outputStrea
     this->allCommands.push_back(helpCommand);
 }
 
-std::unordered_map<std::string, ICommand *> StdCommandFactory::commands() {
-    std::unordered_map <std::string, ICommand*> map;
+std::unordered_map<std::string, ICommand *>* StdCommandFactory::commands() {
+    std::unordered_map <std::string, ICommand*>* map = new std::unordered_map <std::string, ICommand*>();
     for (ICommand* command : this->allCommands) {
-        map[command->name()] = command;
+        (*map)[command->name()] = command;
     }
     return map;
 }

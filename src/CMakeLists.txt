@@ -14,16 +14,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-add_executable(runTests
-    test.cpp
-    cli_functions.cpp
-    StorageDevice.h
-    AddHandler.cpp
-    HelpHandler.cpp
-    Storable.h
-    Storage.cpp
-    User.cpp  # Include all necessary files
-)
+
+add_executable(main.cpp)
 
 # Link the main library to the test executable
 target_link_libraries(runTests gtest_main)

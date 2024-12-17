@@ -34,7 +34,7 @@ void AddCommand::execute(std::vector<std::string> arguments) {
     }
 }
 void AddCommand::printCommand() {
-    outputStream->writeLine("  add [userId] [movieIds] ...\n");
+    outputStream->writeLine("add [userId] [movieIds] ...");
 }
 std::string AddCommand::name() {
     return "add";

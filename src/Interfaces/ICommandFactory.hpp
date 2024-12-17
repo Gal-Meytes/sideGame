@@ -9,7 +9,7 @@
 #include "ICommand.hpp"
 class ICommandFactory {
 public:
-    virtual std::unordered_map<std::string, ICommand*> commands();
+    virtual std::unordered_map<std::string, ICommand*>* commands() = 0;
 };
 
 

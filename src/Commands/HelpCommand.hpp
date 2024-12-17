@@ -4,8 +4,8 @@
 
 #ifndef MY_PROJECT_HELPCOMMAND_HPP
 #define MY_PROJECT_HELPCOMMAND_HPP
-#include "ICommand.hpp"
-#include "OutputStream.hpp"
+#include "../Interfaces/ICommand.hpp"
+#include "../Interfaces/OutputStream.hpp"
 class HelpCommand : public ICommand {
 private:
     std::vector<ICommand*> commands;

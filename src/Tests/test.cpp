@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
-#include "Storage.h"
-#include "FileStorageDevice.cpp"
-#include "cli_functions.hpp"
-#include "HelpHandler.hpp"
-#include "AddHandler.hpp"
-#include "StorageDevice.h"
+#include "../Classes/Storage.h"
+#include "../Standards/FileStorageDevice.cpp"
+#include "../Commands/RecommendCommand.hpp"
+#include "../Commands/HelpCommand.hpp"
+#include "../Commands/AddCommand.hpp"
+#include "../Interfaces/StorageDevice.h"
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map> 
 #include <vector>
 #include <string>
 #include <iostream>
-#include "User.h"
-#include "StorageIterator.hpp"
+#include "../Classes/User.h"
+#include "../Classes/StorageIterator.hpp"
 
 const char* dataPath = "/usr/src/mytest";
 

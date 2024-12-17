@@ -12,7 +12,7 @@ HelpCommand::HelpCommand(std::vector<ICommand *> commands,
     this->outputStream = outputStream;
 }
 void HelpCommand::printCommand() {
-    outputStream->writeLine("  help\n");
+    outputStream->writeLine("help");
 }
 void HelpCommand::execute(std::vector<std::string> arguments) {
     for (ICommand* command : commands) {

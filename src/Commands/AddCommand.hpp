@@ -4,9 +4,9 @@
 
 #ifndef MY_PROJECT_ADDCOMMAND_HPP
 #define MY_PROJECT_ADDCOMMAND_HPP
-#include "ICommand.hpp"
-#include "OutputStream.hpp"
-#include "ErrorStream.hpp"
+#include "../Interfaces/ICommand.hpp"
+#include "../Interfaces/OutputStream.hpp"
+#include "../Interfaces/ErrorStream.hpp"
 class AddCommand : public ICommand {
 private:
     Storage* storage;

@@ -4,7 +4,7 @@
 
 #ifndef STORAGEDEVICE_H
 #define STORAGEDEVICE_H
-#include "LibraryDependencies.h"
+#include "iostream"
 
 class StorageDevice {
 public:

@@ -5,8 +5,8 @@
 #ifndef PROJECT_STORAGE_H
 #define PROJECT_STORAGE_H
 #include "User.h"
-#include "StorageDevice.h"
-#include "Storable.h"
+#include "../Interfaces/StorageDevice.h"
+#include "../Interfaces/Storable.h"
 enum StoringType {
     UserType,
     Undefined

@@ -1,4 +1,5 @@
-#include "RecommendCommand.hpp"
+#include "../Commands/RecommendCommand.hpp"
+#include "../Classes/StorageIterator.hpp"
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -93,12 +94,14 @@ void RecommendCommand::execute(std::vector<std::string> arguments) {
         recommendation += " " + movie;
         if (++count >= 10) break;
     }
-    recommendation = recommendation.substr(1);
+//printf("recommendation: %s\n", recommendation.c_str());
+    if (recommendation.empty() == false)
+        recommendation = recommendation.substr(1);
     outputStream->writeLine(recommendation);
 }
 
 void RecommendCommand::printCommand() {
-    outputStream->writeLine("  recommend [userId] [movieId]\n");
+    outputStream->writeLine("recommend [userId] [movieId]");
 }
 std::string RecommendCommand::name() {
     return "recommend";

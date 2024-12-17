@@ -4,20 +4,20 @@
 
 #ifndef MY_PROJECT_STDCOMMANDFACTORY_HPP
 #define MY_PROJECT_STDCOMMANDFACTORY_HPP
-#include "ICommandFactory.hpp"
-#include "AddCommand.hpp"
-#include "HelpCommand.hpp"
+#include "../Interfaces/ICommandFactory.hpp"
+#include "../Commands/AddCommand.hpp"
+#include "../Commands/HelpCommand.hpp"
 #include "RecommendCommand.hpp"
-#include "Storage.h"
-#include "OutputStream.hpp"
-#include "ErrorStream.hpp"
+#include "../Classes/Storage.h"
+#include "../Interfaces/OutputStream.hpp"
+#include "../Interfaces/ErrorStream.hpp"
 
 class StdCommandFactory : public ICommandFactory{
 private:
     std::vector<ICommand*> allCommands;
 public:
     explicit StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream);
-    virtual std::unordered_map<std::string, ICommand*> commands() override;
+    virtual std::unordered_map<std::string, ICommand*>* commands() override;
 };
 
 

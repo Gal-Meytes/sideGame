@@ -6,8 +6,8 @@
 #ifndef PROJECT_USER_H
 #define PROJECT_USER_H
 
-#include "LibraryDependencies.h"
-#include "Storable.h"
+#include "../LibraryDependencies.h"
+#include "../Interfaces/Storable.h"
 
 class User : public Storable {
 private:

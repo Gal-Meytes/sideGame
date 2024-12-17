@@ -4,7 +4,7 @@
 
 #ifndef PROJECT_STORAGE_ITERATOR_HPP
 #define PROJECT_STORAGE_ITERATOR_HPP
-#include "LibraryDependencies.h"
+#include "../LibraryDependencies.h"
 #include "Storage.h"
 
 class StorageIterator {
@@ -13,7 +13,7 @@ private:
     StoringType type;
     off_t offset;
 public:
-    StorageIterator(Storage* storage, StoringType type);
+    explicit StorageIterator(Storage* storage, StoringType type);
     std::string* getNext();
 };
 

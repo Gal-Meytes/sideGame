@@ -4,9 +4,9 @@
 
 #ifndef MY_PROJECT_ICOMMAND_HPP
 #define MY_PROJECT_ICOMMAND_HPP
-#include "LibraryDependencies.h"
-#include "Storage.h"
-#include "AppData.hpp"
+#include "../LibraryDependencies.h"
+#include "../Classes/Storage.h"
+#include "../Classes/AppData.hpp"
 #include "OutputStream.hpp"
 
 class ICommand {

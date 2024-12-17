@@ -8,9 +8,10 @@
 #include "IIOFactory.hpp"
 
 class ConsoleIOFactory : public IIOFactory {
-    virtual class InputStream* InputStream() override;
-    virtual class OutputStream* OutputStream() override;
-    virtual class ErrorStream* ErrorStream() override;
+public:
+     InputStream* fabricateInputStream() override;
+     OutputStream* fabricateOutputStream() override;
+     ErrorStream* fabricateErrorStream() override;
 };
 
 

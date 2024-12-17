@@ -3,15 +3,16 @@
 //
 
 #include "ConsoleIOFactory.hpp"
-#include "ConsoleOutputStream.hpp"
-#include "ConsoleInputStream.hpp"
+#include "../Standards/ConsoleOutputStream.hpp"
+#include "../Standards/ConsoleInputStream.hpp"
+#include "../Standards/ConsoleErrorStream.hpp"
 
-OutputStream *IIOFactory::OutputStream() {
+OutputStream* ConsoleIOFactory::fabricateOutputStream() {
     return new ConsoleOutputStream();
 }
-InputStream* IIOFactory::InputStream() {
+InputStream* ConsoleIOFactory::fabricateInputStream() {
     return new ConsoleInputStream();
 }
-InputStream* IIOFactory::ErrorStream() {
+ErrorStream* ConsoleIOFactory::fabricateErrorStream() {
     return new ConsoleErrorStream();
 }

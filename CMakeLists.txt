@@ -9,6 +9,9 @@ file(GLOB_RECURSE HEADER_FILES "*.h")
 
 file(GLOB_RECURSE SOURCE_FILES "*.cpp")
 
+#Exclude "Can remove" folder
+list(FILTER SOURCE_FILES EXCLUDE REGEX ".*Can remove/.*")
+
 # Exclude CMakeCXXCompilerId.cpp and other unwanted files
 list(FILTER SOURCE_FILES EXCLUDE REGEX "CMakeCXXCompilerId.cpp")
 

@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_CONSOLEOUTPUTSTREAM_HPP
 #define MY_PROJECT_CONSOLEOUTPUTSTREAM_HPP
-#include "OutputStream.hpp"
+#include "../Interfaces/OutputStream.hpp"
 
 class ConsoleOutputStream : public OutputStream{
     virtual void writeLine(std::string) override;

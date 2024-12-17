@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_CONSOLEINPUTSTREAM_HPP
 #define MY_PROJECT_CONSOLEINPUTSTREAM_HPP
-#include "InputStream.hpp"
+#include "../Interfaces/InputStream.hpp"
 
 class ConsoleInputStream : public InputStream{
     virtual std::string readLine();

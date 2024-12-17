@@ -4,15 +4,15 @@
 
 #ifndef MY_PROJECT_IIOFACTORY_HPP
 #define MY_PROJECT_IIOFACTORY_HPP
-#include "InputStream.hpp"
-#include "OutputStream.hpp"
-#include "ErrorStream.hpp"
+#include "../Interfaces/InputStream.hpp"
+#include "../Interfaces/OutputStream.hpp"
+#include "../Interfaces/ErrorStream.hpp"
 
 class IIOFactory {
 public:
-    virtual InputStream* InputStream() = 0;
-    virtual OutputStream* OutputStream() = 0;
-    virtual ErrorStream* ErrorStream() = 0;
+    virtual InputStream* fabricateInputStream() = 0;
+    virtual OutputStream* fabricateOutputStream() = 0;
+    virtual ErrorStream* fabricateErrorStream() = 0;
 };
 
 

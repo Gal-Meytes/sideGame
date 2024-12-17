@@ -3,3 +3,10 @@
 //
 
 #include "FileStorageDeviceFactory.hpp"
+FileStorageDeviceFactory::FileStorageDeviceFactory(std::string *folderDir) {
+    this->folderDir = folderDir;
+}
+
+StorageDevice *FileStorageDeviceFactory::storageDevice() {
+    return new FileStorageDevice(*this->folderDir);
+}

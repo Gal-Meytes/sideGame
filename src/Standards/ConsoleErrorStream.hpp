@@ -4,9 +4,9 @@
 
 #ifndef MY_PROJECT_CONSOLEERRORSTREAM_HPP
 #define MY_PROJECT_CONSOLEERRORSTREAM_HPP
-#include "ErrorStream.hpp"
+#include "../Interfaces/ErrorStream.hpp"
 
-class ConsoleErrorStream : ErrorStream{
+class ConsoleErrorStream : public ErrorStream{
 public:
     virtual void outputError(std::string error) override;
 };

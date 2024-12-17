@@ -2,7 +2,7 @@
 // Created by Surfer Boy on 30/11/2024.
 //
 #include <sstream>
-#include "User.h"
+#include "../Classes/User.h"
 User::User(std::string userID, const std::vector<std::string>& movieIds) {
     this->userID = userID;
     this->movieIds = movieIds;

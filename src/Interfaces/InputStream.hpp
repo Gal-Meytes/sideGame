@@ -7,6 +7,7 @@
 #include "iostream"
 
 class InputStream {
+public:
     virtual std::string readLine() = 0;
 };
 
