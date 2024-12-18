@@ -10,7 +10,6 @@ HelpCommand::HelpCommand(std::vector<ICommand *> commands,
     this->commands = commands;
     this->commands.push_back(this);
     this->outputStream = outputStream;
-    
 }
 void HelpCommand::printCommand() {
     outputStream->writeLine("help");
