@@ -1,4 +1,4 @@
-#include "../Commands/RecommendCommand.hpp"
+#include "../Commands/GetCommand.hpp"
 #include "../Classes/StorageIterator.hpp"
 #include <unordered_map>
 #include <vector>
@@ -23,7 +23,7 @@ static int calculateSimilarity(const std::vector<std::string>& userA, const std:
     }
     return commonMovies;
 }
-RecommendCommand::RecommendCommand(Storage *storage,
+GetCommand::GetCommand(Storage *storage,
                                    OutputStream *outputStream,
                                    ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
     this->storage = storage;
@@ -31,7 +31,7 @@ RecommendCommand::RecommendCommand(Storage *storage,
     this->errorStream = errorStream;
     this->responseProtocol = responseProtocol;
 }
-void RecommendCommand::execute(std::vector<std::string> arguments) {
+void GetCommand::execute(std::vector<std::string> arguments) {
     std::string userId = arguments[0];
     std::string movieId = arguments[1];
 
@@ -39,8 +39,12 @@ void RecommendCommand::execute(std::vector<std::string> arguments) {
 
     User tmp = User(userId, nullptr);
     std::string* storedUser = storage->retrieve(UserType, &tmp);
-    if (storedUser == nullptr)
+    if (storedUser == nullptr) {
+        responseProtocol->BadRequest();
         return;
+    }
+
+    // we assume that any string can be looked at as userID / MovieID
 
     User* user = new User(*storedUser);
 
@@ -98,12 +102,14 @@ void RecommendCommand::execute(std::vector<std::string> arguments) {
 //printf("recommendation: %s\n", recommendation.c_str());
     if (recommendation.empty() == false)
         recommendation = recommendation.substr(1);
+    responseProtocol->Ok();
+    outputStream->writeLine("");
     outputStream->writeLine(recommendation);
 }
 
-void RecommendCommand::printCommand() {
-    outputStream->writeLine("recommend [userId] [movieId]");
+void GetCommand::printCommand() {
+    outputStream->writeLine("GET [userId] [movieId]");
 }
-std::string RecommendCommand::name() {
-    return "recommend";
+std::string GetCommand::name() {
+    return "GET";
 }

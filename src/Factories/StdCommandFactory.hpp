@@ -5,7 +5,7 @@
 #ifndef MY_PROJECT_STDCOMMANDFACTORY_HPP
 #define MY_PROJECT_STDCOMMANDFACTORY_HPP
 #include "../Interfaces/ICommandFactory.hpp"
-#include "../Commands/AddCommand.hpp"
+#include "../Can remove/AddCommand.hpp"
 #include "../Commands/HelpCommand.hpp"
 #include "RecommendCommand.hpp"
 #include "../Classes/Storage.h"
