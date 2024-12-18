@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "../Classes/Storage.h"
 #include "../Standards/FileStorageDevice.cpp"
-#include "../Commands/RecommendCommand.hpp"
+#include "../Can remove/RecommendCommand.hpp"
 #include "../Commands/HelpCommand.hpp"
-#include "../Commands/AddCommand.hpp"
+#include "../Can remove/AddCommand.hpp"
 #include "../Interfaces/StorageDevice.h"
 #include <algorithm>
 #include <unordered_set>
