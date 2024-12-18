@@ -5,9 +5,15 @@
 #ifndef MY_PROJECT_STDCOMMANDFACTORY_HPP
 #define MY_PROJECT_STDCOMMANDFACTORY_HPP
 #include "../Interfaces/ICommandFactory.hpp"
-#include "../Can remove/AddCommand.hpp"
 #include "../Commands/HelpCommand.hpp"
-#include "RecommendCommand.hpp"
+
+#include "../Commands/DeleteCommand.hpp"
+#include "../Commands/GetCommand.hpp"
+#include "../Commands/PatchCommand.hpp"
+#include "../Commands/PostCommand.hpp"
+#include "../Commands/HelpCommand.hpp"
+
+
 #include "../Classes/Storage.h"
 #include "../Interfaces/OutputStream.hpp"
 #include "../Interfaces/ErrorStream.hpp"
