@@ -15,12 +15,14 @@ enum StoringType {
 class Storage {
 private:
     StorageDevice* device;
+
 public:
     explicit Storage(StorageDevice* device);
     virtual int add(StoringType Type, Storable* item);
     virtual std::string* retrieve(StoringType Type, Storable* item);
     virtual int update(StoringType Type, Storable* item);
     virtual std::string* getKey(StoringType storingType, off_t index, off_t* nextIndex);
+
 
 private:
     std::string getKey(StoringType storingType, Storable *item);

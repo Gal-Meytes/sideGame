@@ -10,14 +10,21 @@ int Storage::add(StoringType storingType, Storable *item) {
         return 0;
     std::string key = getKey(storingType, item);
     std::string value = item->serialize();
-    return device->add(key, value, nullptr);
+    if (device->mutex() == false)
+        return 0;
+    int result = device->add(key, value, nullptr);
+    device->releaseMutex();
+    return result;
 }
 
 std::string * Storage::retrieve(StoringType storingType, Storable *item) {
     if (item == nullptr)
         return nullptr;
     std::string key = getKey(storingType, item);
-    return device->find(key);
+    device->mutex();
+    std::string* res = device->find(key);
+    device->releaseMutex();
+    return res;
 }
 
 std::string * Storage::getKey(StoringType storingType, off_t offset, off_t* nextIndex) {

@@ -14,7 +14,7 @@ StdCommandFactory::StdCommandFactory(Storage* storage, OutputStream* outputStrea
     this->allCommands.push_back(getCommand);
     this->allCommands.push_back(patchCommand);
     this->allCommands.push_back(postCommand);
-    
+
     HelpCommand* helpCommand = new HelpCommand(allCommands, outputStream);
     this->allCommands.push_back(helpCommand);
 }

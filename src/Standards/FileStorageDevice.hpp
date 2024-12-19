@@ -5,6 +5,12 @@
 #ifndef MY_PROJECT_FILESTORAGEDEVICE_HPP
 #define MY_PROJECT_FILESTORAGEDEVICE_HPP
 #include "iostream"
+#include <sys/file.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdexcept>
+#include <string>
+
 #include "../Interfaces/StorageDevice.h"
 /***
  * FileStorageDevice handles storing and retrieving key-value data using a filesystem-based approach.
@@ -23,6 +29,7 @@ private:
     int keyFd = -1;
     int offsetFd = -1;
     int valueFd = -1;
+    int lockFd = -1;
 
 public:
     explicit FileStorageDevice(std::string directory);
@@ -31,6 +38,8 @@ public:
     int add(std::string key, std::string value, std::string** error) override;
     int update(std::string key, std::string value, std::string** error) override;
     off_t getKey(off_t offset, std::string* buffer) override;
+    bool mutex() override;
+    bool releaseMutex() override;
 
 private:
     static off_t appendToFile(int fd, std::string value);
