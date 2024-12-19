@@ -1,0 +1,16 @@
+//
+// Created by Surfer Boy on 19/12/2024.
+//
+
+#ifndef MY_PROJECT_CONSOLECONNECTIONFACTORY_HPP
+#define MY_PROJECT_CONSOLECONNECTIONFACTORY_HPP
+
+
+
+class ConsoleConnectionFactory {
+
+};
+
+
+
+#endif //MY_PROJECT_CONSOLECONNECTIONFACTORY_HPP
