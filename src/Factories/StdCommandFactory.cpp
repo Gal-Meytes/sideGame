@@ -4,12 +4,17 @@
 
 #include "StdCommandFactory.hpp"
 StdCommandFactory::StdCommandFactory(Storage* storage, OutputStream* outputStream, ErrorStream* errorStream, IResponseProtocol* responseProtocol) {
-    AddCommand* addCommand = new AddCommand(storage, outputStream, errorStream, responseProtocol);
-    RecommendCommand* recommendCommand = new RecommendCommand(storage, outputStream, errorStream, responseProtocol);
 
-    this->allCommands.push_back(addCommand);
-    this->allCommands.push_back(recommendCommand);
+    DeleteCommand* deleteCommand = new DeleteCommand(storage, outputStream, errorStream, responseProtocol);
+    GetCommand* getCommand = new GetCommand(storage, outputStream, errorStream, responseProtocol);
+    PatchCommand* patchCommand = new PatchCommand(storage, outputStream, errorStream, responseProtocol);
+    PostCommand* postCommand = new PostCommand(storage, outputStream, errorStream, responseProtocol);
 
+    this->allCommands.push_back(deleteCommand);
+    this->allCommands.push_back(getCommand);
+    this->allCommands.push_back(patchCommand);
+    this->allCommands.push_back(postCommand);
+    
     HelpCommand* helpCommand = new HelpCommand(allCommands, outputStream);
     this->allCommands.push_back(helpCommand);
 }
