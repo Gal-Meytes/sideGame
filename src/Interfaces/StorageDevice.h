@@ -14,6 +14,8 @@ public:
     virtual int add(std::string key, std::string value, std::string** error) = 0;
     virtual int update(std::string key, std::string value, std::string** error) = 0;
     virtual off_t getKey(off_t offset, std::string* buffer) = 0;
+    virtual bool mutex() = 0;
+    virtual bool releaseMutex() = 0;
 };
 
 

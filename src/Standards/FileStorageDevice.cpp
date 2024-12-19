@@ -6,6 +6,7 @@
 #define MAGIC_STRING "/keys.txt"
 #define MAGIC_STRING_2 "/offsets.txt"
 #define MAGIC_STRING_3 "/values.txt"
+#define MAGIC_STRING_4 "/mutexFile"
 #define IO_NUM_TRIES 1000;
 #define IO_SLEEP_MILLISECONDS 200;
 
@@ -17,6 +18,7 @@ FileStorageDevice::FileStorageDevice(std::string directory) {
     std::string first_subdir = (directory + std::string(MAGIC_STRING));
     std::string second_subdir = (directory + std::string(MAGIC_STRING_2));
     std::string third_subdir = (directory + std::string(MAGIC_STRING_3));
+    std::string fourth_subdir = (directory + std::string(MAGIC_STRING_4));
 
     // Check if directories exist or create them
     if (mkdir(directory.c_str(), 0777) == -1 && errno != EEXIST) {
@@ -46,7 +48,16 @@ FileStorageDevice::FileStorageDevice(std::string directory) {
         close(this->offsetFd);  // Clean up previously opened files
         return;
     }
+    this->lockFd = open(fourth_subdir.c_str(), O_CREAT | O_RDWR, 0644);
+    if (this->lockFd == -1) {
+        std::cerr << "Error opening lock file: " << third_subdir << std::endl;
+        close(this->keyFd);
+        close(this->offsetFd);  // Clean up previously opened files
+        close(this->valueFd);
+        return;
+    }
 }
+
 FileStorageDevice::~FileStorageDevice() {
         if (this->keyFd != -1) {
             close(this->keyFd);
@@ -57,7 +68,10 @@ FileStorageDevice::~FileStorageDevice() {
         if (this->valueFd != -1) {
             close(this->valueFd);
         }
-    }
+        if (this->lockFd != -1) {
+            close(this->lockFd);
+        }
+}
 
     std::string* FileStorageDevice::find(std::string key) {
         long long index = findKeyIndex(key);
@@ -189,6 +203,29 @@ FileStorageDevice::~FileStorageDevice() {
             return -1;
         return i;
     }
+
+bool FileStorageDevice::mutex() {
+        int maxAttempts = IO_NUM_TRIES;
+        int sleepTime = IO_SLEEP_MILLISECONDS;
+        for (; maxAttempts > 0; maxAttempts--) {
+            if (flock(this->lockFd, LOCK_EX | LOCK_NB) == -1)
+                usleep(sleepTime);
+            else
+                return true;
+        }
+            return false;
+}
+bool FileStorageDevice::releaseMutex() {
+    int maxAttempts = IO_NUM_TRIES;
+    int sleepTime = IO_SLEEP_MILLISECONDS;
+    for (; maxAttempts > 0; maxAttempts--) {
+        if (flock(this->lockFd, LOCK_UN) == -1)
+            usleep(sleepTime);
+        else
+            return true;
+    }
+    return false;
+}
     /*
      appends a nullptr terminator if doesn't appear before return - worth to mention.
      error captures the reason the function unexpectedly failed, future updates -

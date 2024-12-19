@@ -30,10 +30,13 @@ int main() {
         //std::getline(std::cin, input);
 //        AppData* appData = new AppData();
         std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
+
         IIOFactory* ioFactory = new ConsoleIOFactory();
+
         InputStream* inputStream = ioFactory->fabricateInputStream();
         OutputStream* outputStream = ioFactory->fabricateOutputStream();
         ErrorStream* errorStream = ioFactory->fabricateErrorStream();
+
         IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
         Storage* storage = new Storage(storageDeviceFactory->storageDevice());
         IResponseProtocolFactory* iResponseProtocolFactory = new StreamHTTPResponseProtocolFactory(outputStream);
