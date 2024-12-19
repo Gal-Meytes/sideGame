@@ -45,6 +45,7 @@ int Storage::update(StoringType storingType, Storable *item) {
     std::string key = getKey(storingType, item);
     std::string value = item->serialize();
     return device->update(key, value, nullptr);
+    
 }
 
 //private
