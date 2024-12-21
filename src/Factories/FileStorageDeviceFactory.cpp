@@ -7,6 +7,6 @@ FileStorageDeviceFactory::FileStorageDeviceFactory(std::string *folderDir) {
     this->folderDir = folderDir;
 }
 
-StorageDevice *FileStorageDeviceFactory::storageDevice() {
+StorageDevice *FileStorageDeviceFactory::fabricateStorageDevice() {
     return new FileStorageDevice(*this->folderDir);
 }

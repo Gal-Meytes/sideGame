@@ -8,12 +8,14 @@
 #include "../LibraryDependencies.h"
 #include "../Interfaces/ICommand.hpp"
 #include "../Interfaces/InputStream.hpp"
+#include "../Interfaces/IResponseProtocol.hpp"
 class App {
 private:
     InputStream* inputStream;
+    IResponseProtocol* responseProtocol;
     std::unordered_map<std::string, ICommand*>* commands;
 public:
-    explicit App (std::unordered_map<std::string, ICommand*>* commands, InputStream* inputStream);
+    explicit App (std::unordered_map<std::string, ICommand*>* commands, InputStream* inputStream,  IResponseProtocol* responseProtocol);
     void run();
 };
 

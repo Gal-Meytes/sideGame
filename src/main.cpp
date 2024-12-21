@@ -17,35 +17,30 @@
  */
 
 #include "Factories/IIOFactory.hpp"
-#include "Factories/ConsoleIOFactory.hpp"
-#include "Factories/StdCommandFactory.hpp"
 #include "Factories/IStorageDeviceFactory.hpp"
 #include "Factories/FileStorageDeviceFactory.hpp"
-#include "Factories/StreamHTTPResponseProtocolFactory.hpp"
-#include "Classes/App.hpp"
+#include "Factories/IConnectionFactory.hpp"
+#include "Factories/ConsoleConnectionFactory.hpp"
+#include "Factories/IAppFactory.hpp"
+#include "Factories/AppFactory.hpp"
+#include "Interfaces/IConnectionManager.hpp"
+#include "Standards/SimpleConnectionManager.hpp"
 int main() {
     std::string input;
 
     while (true) {
-        //std::getline(std::cin, input);
-//        AppData* appData = new AppData();
+
+
+        int numConnections = 10;
         std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
 
-        IIOFactory* ioFactory = new ConsoleIOFactory();
-
-        InputStream* inputStream = ioFactory->fabricateInputStream();
-        OutputStream* outputStream = ioFactory->fabricateOutputStream();
-        ErrorStream* errorStream = ioFactory->fabricateErrorStream();
-
         IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
-        Storage* storage = new Storage(storageDeviceFactory->storageDevice());
-        IResponseProtocolFactory* iResponseProtocolFactory = new StreamHTTPResponseProtocolFactory(outputStream);
-        IResponseProtocol* responseProtocol = iResponseProtocolFactory->fabricateResponseProtocol();
+        IAppFactory* appFactory = new AppFactory(storageDeviceFactory);
+        IConnectionFactory* iConnectionFactory = new ConsoleConnectionFactory();
 
-        ICommandFactory* commandFactory = new StdCommandFactory(storage, outputStream, errorStream, responseProtocol);
-        App* app = new App(commandFactory->commands(), inputStream);
-        app->run();
-//        integrationCommend(input);
+        IConnectionManager* connectionManager = new SimpleConnectionManager(numConnections, iConnectionFactory, appFactory);
+
+        connectionManager->run();
     }
 
     return 0;

@@ -17,9 +17,10 @@ std::vector<std::string> split(const std::string& str, char delimiter)
     return res;
 }
 
-App::App(std::unordered_map<std::string, ICommand*>* commands, InputStream* istream) {
+App::App(std::unordered_map<std::string, ICommand*>* commands, InputStream* istream,  IResponseProtocol* responseProtocol) {
     this->commands = commands;
     this->inputStream = istream;
+    this->responseProtocol = responseProtocol;
 }
 
 void App::run() {
@@ -31,12 +32,16 @@ void App::run() {
         std::string inputCommand = inputArgs[0];
         inputArgs.erase(inputArgs.begin());
 
+        bool validCommandName = false;
         for (const std::pair<std::string,ICommand*>& command : *commands) {
             if (command.first == inputCommand)
             {
                 (command.second)->execute(inputArgs);
+                validCommandName = true;
                 break;
             }
         }
+        if (validCommandName == false)
+            responseProtocol->BadRequest();
     }
 }

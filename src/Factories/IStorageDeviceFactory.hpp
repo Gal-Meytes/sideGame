@@ -8,7 +8,7 @@
 
 class IStorageDeviceFactory {
 public:
-    virtual StorageDevice* storageDevice() = 0;
+    virtual StorageDevice* fabricateStorageDevice() = 0;
 };
 
 

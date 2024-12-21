@@ -5,14 +5,13 @@
 #ifndef MY_PROJECT_FILESTORAGEDEVICEFACTORY_HPP
 #define MY_PROJECT_FILESTORAGEDEVICEFACTORY_HPP
 #include "IStorageDeviceFactory.hpp"
-#include "../Classes/AppData.hpp"
 #include "../Standards/FileStorageDevice.hpp"
 class FileStorageDeviceFactory : public IStorageDeviceFactory {
 private:
     std::string* folderDir;
 public:
     FileStorageDeviceFactory(std::string * folderDir);
-    virtual StorageDevice * storageDevice() override;
+    virtual StorageDevice * fabricateStorageDevice() override;
 };
 
 

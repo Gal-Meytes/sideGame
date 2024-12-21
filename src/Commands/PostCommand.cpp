@@ -3,7 +3,7 @@
 //
 
 #include "PostCommand.hpp"
-AddCommand::PostCommand(Storage* storage, OutputStream *outputStream,
+PostCommand::PostCommand(Storage* storage, OutputStream *outputStream,
                        ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
     this->storage = storage;
     this->outputStream = outputStream;
@@ -31,11 +31,11 @@ void PostCommand::execute(std::vector<std::string> arguments) {
         responseProtocol->Created();
         return;
     }
-    responseProtocol->BadRequest();
+    responseProtocol->NotFound();
 }
 void PostCommand::printCommand() {
     outputStream->writeLine("POST [userId] [movieIds] ...");
 }
-std::string AddCommand::name() {
+std::string PostCommand::name() {
     return "POST";
 }

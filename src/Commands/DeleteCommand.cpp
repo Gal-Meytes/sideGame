@@ -49,8 +49,8 @@ void DeleteCommand::execute(std::vector<std::string> arguments) {
     responseProtocol->NoContent();
 }
 void DeleteCommand::printCommand() {
-    outputStream->writeLine("delete [userId] [movieIds] ...");
+    outputStream->writeLine("DELETE [userId] [movieIds] ...");
 }
 std::string DeleteCommand::name() {
-    return "delete";
+    return "DELETE";
 }

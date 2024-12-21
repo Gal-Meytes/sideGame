@@ -3,7 +3,7 @@
 //
 
 #include "PatchCommand.hpp"
-AddCommand::PatchCommand(Storage* storage, OutputStream *outputStream,
+PatchCommand::PatchCommand(Storage* storage, OutputStream *outputStream,
         ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
 this->storage = storage;
 this->outputStream = outputStream;
@@ -23,7 +23,7 @@ void PatchCommand::execute(std::vector<std::string> arguments) {
     std::string* userSerialized = (std::string*) storage->retrieve(UserType, &tmp);
 
     if (userSerialized == nullptr) {
-        responseProtocol->BadRequest();
+        responseProtocol->NotFound();
         return;
     } else {
         // User exists, update their movie list
@@ -32,12 +32,12 @@ void PatchCommand::execute(std::vector<std::string> arguments) {
         if (!storage->update(UserType, user)) {
             errorStream->outputError("Error: Failed to update user in storage.\n");
         }
-        responseProtocol->OK();
+        responseProtocol->Ok();
     }
 }
 void PatchCommand::printCommand() {
     outputStream->writeLine("PATCH [userId] [movieIds] ...");
 }
-std::string AddCommand::name() {
+std::string PatchCommand::name() {
     return "PATCH";
 }

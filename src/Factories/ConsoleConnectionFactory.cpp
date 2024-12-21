@@ -3,3 +3,13 @@
 //
 
 #include "ConsoleConnectionFactory.hpp"
+
+IConnection *ConsoleConnectionFactory::fabricateIConnection() {
+    if (numConnections > 0) {
+        numConnections--;
+        return new ConsoleConnection();
+    }
+    return nullptr;
+}
+
+ConsoleConnectionFactory::ConsoleConnectionFactory() {}

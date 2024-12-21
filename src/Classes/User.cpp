@@ -74,6 +74,6 @@ bool User::hasWatchedMovie(std::string otherMovieId) {
     return false;
 }
 void User::deleteMovie(std::string movieId) {
-    if (!hasWatchedMovie(movieId))
+    if (hasWatchedMovie(movieId) == true)
          movieIds.erase(std::remove(movieIds.begin(), movieIds.end(), movieId), movieIds.end());
 }

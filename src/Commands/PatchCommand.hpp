@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_PATCHCOMMAND_HPP
 #define MY_PROJECT_PATCHCOMMAND_HPP
-#inclue "../Interfaces/ICommand.hpp"
+#include "../Interfaces/ICommand.hpp"
 #include "../Interfaces/ICommand.hpp"
 #include "../Interfaces/OutputStream.hpp"
 #include "../Interfaces/ErrorStream.hpp"
