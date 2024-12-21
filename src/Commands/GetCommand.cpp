@@ -23,7 +23,7 @@ static int calculateSimilarity(const std::vector<std::string>& userA, const std:
     }
     return commonMovies;
 }
-static int isLongInteger(const char* str) {
+static int is_number(const char *str) {
     char* endptr;
 
     // Use strtol to convert the string to a long integer
@@ -102,9 +102,9 @@ void GetCommand::execute(std::vector<std::string> arguments) {
               [](const auto& a, const auto& b) {
                   return   a.second > b.second ||
                          ( a.second == b.second &&
-                                  ( isLongInteger(a.first.c_str()) && !isLongInteger(b.first.c_str()) ||
-                                          ( isLongInteger(a.first.c_str()) &&
-                                            isLongInteger(b.first.c_str()) &&
+                                  ( is_number(a.first.c_str()) && !is_number(b.first.c_str()) ||
+                                          ( is_number(a.first.c_str()) &&
+                                            is_number(b.first.c_str()) &&
                                             strtol(a.first.c_str(), nullptr, 10) < strtol(b.first.c_str(), nullptr, 10)
                                           )
                                   )

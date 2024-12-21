@@ -8,9 +8,6 @@ AppFactory::AppFactory(IStorageDeviceFactory* iStorageDeviceFactory) {
 }
 App* AppFactory::fabricateApp(IConnection* connection) {
 
-
-
-    //IConnection* connection = connectionFactory->fabricateIConnection();
     InputStream* inputStream = connection->getInputStream();
     OutputStream* outputStream = connection->getOutputStream();
     ErrorStream* errorStream = connection->getErrorStream();

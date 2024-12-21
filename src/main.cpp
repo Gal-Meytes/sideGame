@@ -26,18 +26,31 @@
 #include "Factories/AppFactory.hpp"
 #include "Interfaces/IConnectionManager.hpp"
 #include "Standards/SimpleConnectionManager.hpp"
-int main() {
+static int is_number(const char *str) {
+    char* endptr;
+
+    // Use strtol to convert the string to a long integer
+    strtol(str, &endptr, 10);
+
+    // Check if there were any non-digit characters after the conversion
+    // If endptr points to the null terminator, the entire string is a valid long
+    return *endptr == '\0';
+}
+int main(int argc, char* argv[]) {
+    if (argc < 2)
+        return 0;
+    if (is_number(argv[1]) == 0)
+        return 0;
+
     std::string input;
+    std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
 
-        int numConnections = 10;
-        std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
+    IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
+    IAppFactory* appFactory = new AppFactory(storageDeviceFactory);
+    IConnectionFactory* iConnectionFactory = new InternetConnectionFactory((int)strtol(argv[1], nullptr, 10), new ConsoleErrorStream());
 
-        IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
-        IAppFactory* appFactory = new AppFactory(storageDeviceFactory);
-        IConnectionFactory* iConnectionFactory = new InternetConnectionFactory(12345, new ConsoleErrorStream());
+    IConnectionManager* connectionManager = new SimpleConnectionManager(iConnectionFactory, appFactory);
 
-        IConnectionManager* connectionManager = new SimpleConnectionManager(numConnections, iConnectionFactory, appFactory);
-
-        connectionManager->run();
+    connectionManager->run();
     return 0;
 }

@@ -11,11 +11,10 @@
 #include "thread"
 class SimpleConnectionManager : public IConnectionManager {
 private:
-    int numConnections;
     IConnectionFactory* iConnectionFactory;
     IAppFactory* iAppFactory;
 public:
-    SimpleConnectionManager(int NumConnections, IConnectionFactory* iConnectionFactory, IAppFactory* iAppFactory);
+    SimpleConnectionManager(IConnectionFactory* iConnectionFactory, IAppFactory* iAppFactory);
     virtual void run() override;
 
 };

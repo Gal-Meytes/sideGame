@@ -3,8 +3,7 @@
 //
 
 #include "SimpleConnectionManager.hpp"
-SimpleConnectionManager::SimpleConnectionManager(int numConnections, IConnectionFactory* iConnectionFactory, IAppFactory* iAppFactory) {
-    this->numConnections = numConnections;
+SimpleConnectionManager::SimpleConnectionManager(IConnectionFactory* iConnectionFactory, IAppFactory* iAppFactory) {
     this->iConnectionFactory = iConnectionFactory;
     this->iAppFactory =iAppFactory;
 }
