@@ -41,15 +41,3 @@ int main() {
         connectionManager->run();
     return 0;
 }
-/*
- * add_executable(runTests
-    test.cpp
-    cli_functions.cpp
-    StorageDevice.h
-    AddHandler.cpp
-    HelpHandler.cpp
-    Storable.h
-    Storage.cpp
-    User.cpp  # Include all necessary files
-)
- */
