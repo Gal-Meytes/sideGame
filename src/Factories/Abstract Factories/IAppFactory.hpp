@@ -4,8 +4,8 @@
 
 #ifndef MY_PROJECT_IAPPFACTORY_HPP
 #define MY_PROJECT_IAPPFACTORY_HPP
-#include "../Classes/App.hpp"
-#include "../Interfaces/IConnection.hpp"
+#include "../../Classes/App.hpp"
+#include "../../Interfaces/IConnection.hpp"
 
 class IAppFactory {
 public:

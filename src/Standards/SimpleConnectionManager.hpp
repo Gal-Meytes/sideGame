@@ -5,8 +5,8 @@
 #ifndef MY_PROJECT_SIMPLECONNECTIONMANAGER_HPP
 #define MY_PROJECT_SIMPLECONNECTIONMANAGER_HPP
 #include "../Interfaces/IConnectionManager.hpp"
-#include "../Factories/IConnectionFactory.hpp"
-#include "../Factories/IAppFactory.hpp"
+#include "../Factories/Abstract Factories/IConnectionFactory.hpp"
+#include "../Factories/Abstract Factories/IAppFactory.hpp"
 #include "../Classes/App.hpp"
 #include "thread"
 class SimpleConnectionManager : public IConnectionManager {

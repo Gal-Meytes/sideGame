@@ -12,10 +12,11 @@
 class App {
 private:
     InputStream* inputStream;
+    OutputStream* outputStream;
     IResponseProtocol* responseProtocol;
     std::unordered_map<std::string, ICommand*>* commands;
 public:
-    explicit App (std::unordered_map<std::string, ICommand*>* commands, InputStream* inputStream,  IResponseProtocol* responseProtocol);
+    explicit App (std::unordered_map<std::string, ICommand*>* commands, InputStream* inputStream, OutputStream* outputStream,  IResponseProtocol* responseProtocol);
     void run();
 };
 

@@ -5,9 +5,14 @@
 #ifndef MY_PROJECT_CONSOLEOUTPUTSTREAM_HPP
 #define MY_PROJECT_CONSOLEOUTPUTSTREAM_HPP
 #include "../Interfaces/OutputStream.hpp"
-
-class ConsoleOutputStream : public OutputStream{
+#include "iostream"
+#include "vector"
+class ConsoleOutputStream : public OutputStream {
+private:
+    std::vector<std::string> buffer;
+public:
     virtual void writeLine(std::string) override;
+    void flush() override;
 };
 
 

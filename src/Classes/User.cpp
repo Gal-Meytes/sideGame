@@ -6,7 +6,7 @@
 #include <algorithm>
 User::User(std::string userID, const std::vector<std::string>& movieIds) {
     this->userID = userID;
-    this->movieIds = movieIds;
+    insertMovies(movieIds);
 }
 User::User(std::string userID, const std::vector<std::string>* movieIds) {
     this->userID = userID;
@@ -14,10 +14,11 @@ User::User(std::string userID, const std::vector<std::string>* movieIds) {
        this->movieIds = *movieIds;
     }
 }
-void User::insertMovies(std::vector<std::string> &movieIds) {
+void User::insertMovies(const std::vector<std::string> &movieIds) {
     //assumes instance movie vector is initialized
     for (std::string movie : movieIds) {
-        this->movieIds.push_back(movie);
+        if (hasWatchedMovie(movie) == false)
+            this->movieIds.push_back(movie);
     }
 }
 

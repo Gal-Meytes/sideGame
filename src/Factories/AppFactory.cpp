@@ -22,6 +22,6 @@ App* AppFactory::fabricateApp(IConnection* connection) {
 
     ICommandFactory* commandFactory = new StdCommandFactory(storage, outputStream, errorStream, responseProtocol);
 
-    App* app = new App(commandFactory->commands(), inputStream, responseProtocol);
+    App* app = new App(commandFactory->commands(), inputStream, outputStream, responseProtocol);
     return app;
 }

@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_CONSOLECONNECTIONFACTORY_HPP
 #define MY_PROJECT_CONSOLECONNECTIONFACTORY_HPP
-#include "IConnectionFactory.hpp"
+#include "Abstract Factories/IConnectionFactory.hpp"
 #include "../Standards/ConsoleConnection.hpp"
 class ConsoleConnectionFactory : public IConnectionFactory {
 private:

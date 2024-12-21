@@ -5,5 +5,5 @@
 #include "ConsoleErrorStream.hpp"
 
 void ConsoleErrorStream::outputError(std::string error) {
-    std::cerr << error;
+    std::cerr << error << std::endl;
 }

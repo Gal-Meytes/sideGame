@@ -23,6 +23,17 @@ static int calculateSimilarity(const std::vector<std::string>& userA, const std:
     }
     return commonMovies;
 }
+static int isLongInteger(const char* str) {
+    char* endptr;
+
+    // Use strtol to convert the string to a long integer
+    strtol(str, &endptr, 10);
+
+    // Check if there were any non-digit characters after the conversion
+    // If endptr points to the null terminator, the entire string is a valid long
+    return *endptr == '\0';
+}
+
 GetCommand::GetCommand(Storage *storage,
                                    OutputStream *outputStream,
                                    ErrorStream *errorStream, IResponseProtocol* responseProtocol) {
@@ -89,17 +100,26 @@ void GetCommand::execute(std::vector<std::string> arguments) {
     std::vector<std::pair<std::string, int>> sortedMovies(movieScores.begin(), movieScores.end());
     std::sort(sortedMovies.begin(), sortedMovies.end(),
               [](const auto& a, const auto& b) {
-                  return a.second > b.second || (a.second == b.second && a.first < b.first);
+                  return   a.second > b.second ||
+                         ( a.second == b.second &&
+                                  ( isLongInteger(a.first.c_str()) && !isLongInteger(b.first.c_str()) ||
+                                          ( isLongInteger(a.first.c_str()) &&
+                                            isLongInteger(b.first.c_str()) &&
+                                            strtol(a.first.c_str(), nullptr, 10) < strtol(b.first.c_str(), nullptr, 10)
+                                          )
+                                  )
+                         );
               });
 
     // Output top 10 recommendations
     std::string recommendation = "";
     int count = 0;
+
     for (const auto& [movie, score] : sortedMovies) {
         recommendation += " " + movie;
         if (++count >= 10) break;
     }
-//printf("recommendation: %s\n", recommendation.c_str());
+
     if (recommendation.empty() == false)
         recommendation = recommendation.substr(1);
     responseProtocol->Ok();

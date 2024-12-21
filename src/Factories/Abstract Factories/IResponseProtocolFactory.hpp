@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_IRESPONSEPROTOCOLFACTORY_HPP
 #define MY_PROJECT_IRESPONSEPROTOCOLFACTORY_HPP
-#include "../Interfaces/IResponseProtocol.hpp"
+#include "../../Interfaces/IResponseProtocol.hpp"
 
 class IResponseProtocolFactory {
 public:

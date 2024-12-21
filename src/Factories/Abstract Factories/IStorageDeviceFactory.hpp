@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_ISTORAGEDEVICEFACTORY_HPP
 #define MY_PROJECT_ISTORAGEDEVICEFACTORY_HPP
-#include "../Interfaces/StorageDevice.h"
+#include "../../Interfaces/StorageDevice.h"
 
 class IStorageDeviceFactory {
 public:

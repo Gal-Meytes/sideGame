@@ -4,9 +4,9 @@
 
 #ifndef MY_PROJECT_APPFACTORY_HPP
 #define MY_PROJECT_APPFACTORY_HPP
-#include "IAppFactory.hpp"
-#include "IConnectionFactory.hpp"
-#include "IStorageDeviceFactory.hpp"
+#include "Abstract Factories/IAppFactory.hpp"
+#include "Abstract Factories/IConnectionFactory.hpp"
+#include "Abstract Factories/IStorageDeviceFactory.hpp"
 #include "StreamHTTPResponseProtocolFactory.hpp"
 #include "StdCommandFactory.hpp"
 #include "iostream"

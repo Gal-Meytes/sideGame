@@ -5,7 +5,7 @@
 #ifndef MY_PROJECT_CONSOLEIOFACTORY_HPP
 #define MY_PROJECT_CONSOLEIOFACTORY_HPP
 
-#include "IIOFactory.hpp"
+#include "Abstract Factories/IIOFactory.hpp"
 
 class ConsoleIOFactory : public IIOFactory {
 public:

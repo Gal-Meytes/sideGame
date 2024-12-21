@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_STREAMHTTPRESPONSEPROTOCOLFACTORY_HPP
 #define MY_PROJECT_STREAMHTTPRESPONSEPROTOCOLFACTORY_HPP
-#include "IResponseProtocolFactory.hpp"
+#include "Abstract Factories/IResponseProtocolFactory.hpp"
 #include "../Interfaces/OutputStream.hpp"
 #include "../Standards/StreamHTTPResponseProtocol.hpp"
 class StreamHTTPResponseProtocolFactory : public IResponseProtocolFactory{

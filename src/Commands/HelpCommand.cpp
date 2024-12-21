@@ -6,16 +6,18 @@
 #include "iostream"
 #include "sstream"
 HelpCommand::HelpCommand(std::vector<ICommand *> commands,
-                         OutputStream *outputStream) {
+                         OutputStream *outputStream, IResponseProtocol* iResponseProtocol) {
     this->commands = commands;
     this->commands.push_back(this);
     this->outputStream = outputStream;
-
+    this->iResponseProtocol = iResponseProtocol;
 }
 void HelpCommand::printCommand() {
     outputStream->writeLine("help");
 }
 void HelpCommand::execute(std::vector<std::string> arguments) {
+    iResponseProtocol->Ok();
+    outputStream->writeLine("");
     for (ICommand* command : commands) {
         command->printCommand();
     }

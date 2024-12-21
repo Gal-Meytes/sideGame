@@ -9,6 +9,7 @@
 class OutputStream {
 public:
     virtual void writeLine(std::string) = 0;
+    virtual void flush() = 0;
 };
 
 

@@ -18,7 +18,7 @@ public:
     explicit User(std::string userID, const std::vector<std::string>& movieIds);
     explicit User(std::string userID, const std::vector<std::string>* movieIds);
     explicit User(std::string serialized_user);
-    void insertMovies(std::vector<std::string>& movieIds);
+    void insertMovies(const std::vector<std::string>& movieIds);
     std::string getIdentity();
     std::string serialize();
     std::vector<std::string> getMovies();

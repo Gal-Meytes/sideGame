@@ -16,33 +16,29 @@
  * @return int Returns 0 upon successful execution.
  */
 
-#include "Factories/IIOFactory.hpp"
-#include "Factories/IStorageDeviceFactory.hpp"
+#include "Factories/Abstract Factories/IIOFactory.hpp"
+#include "Factories/Abstract Factories/IStorageDeviceFactory.hpp"
 #include "Factories/FileStorageDeviceFactory.hpp"
-#include "Factories/IConnectionFactory.hpp"
+#include "Factories/Abstract Factories/IConnectionFactory.hpp"
 #include "Factories/ConsoleConnectionFactory.hpp"
-#include "Factories/IAppFactory.hpp"
+#include "Factories/InternetConnectionFactory.hpp"
+#include "Factories/Abstract Factories/IAppFactory.hpp"
 #include "Factories/AppFactory.hpp"
 #include "Interfaces/IConnectionManager.hpp"
 #include "Standards/SimpleConnectionManager.hpp"
 int main() {
     std::string input;
 
-    while (true) {
-
-
         int numConnections = 10;
         std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
 
         IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
         IAppFactory* appFactory = new AppFactory(storageDeviceFactory);
-        IConnectionFactory* iConnectionFactory = new ConsoleConnectionFactory();
+        IConnectionFactory* iConnectionFactory = new InternetConnectionFactory(12345, new ConsoleErrorStream());
 
         IConnectionManager* connectionManager = new SimpleConnectionManager(numConnections, iConnectionFactory, appFactory);
 
         connectionManager->run();
-    }
-
     return 0;
 }
 /*

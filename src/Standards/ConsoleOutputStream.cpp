@@ -5,5 +5,11 @@
 #include "ConsoleOutputStream.hpp"
 
 void ConsoleOutputStream::writeLine(std::string line) {
-    std::cout << line << std::endl;
+    buffer.push_back(line + "\n");
+}
+void ConsoleOutputStream::flush() {
+    for (std::string line : this -> buffer) {
+        std::cout << line;
+    }
+    this->buffer = std::vector<std::string>();
 }

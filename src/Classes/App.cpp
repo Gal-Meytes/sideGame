@@ -4,6 +4,8 @@
 
 
 #include "App.hpp"
+#include "iostream"
+#include "algorithm"
 std::vector<std::string> split(const std::string& str, char delimiter)
 {
     std::stringstream ss(str);  // No need for 'std::stringstream ss = ...'
@@ -17,9 +19,10 @@ std::vector<std::string> split(const std::string& str, char delimiter)
     return res;
 }
 
-App::App(std::unordered_map<std::string, ICommand*>* commands, InputStream* istream,  IResponseProtocol* responseProtocol) {
+App::App(std::unordered_map<std::string, ICommand*>* commands, InputStream* istream, OutputStream* outputStream,  IResponseProtocol* responseProtocol) {
     this->commands = commands;
     this->inputStream = istream;
+    this->outputStream = outputStream;
     this->responseProtocol = responseProtocol;
 }
 
@@ -27,6 +30,10 @@ void App::run() {
     while (true) {
         std::string line = inputStream->readLine();
         std::vector<std::string> inputArgs = split(line, ' ');
+
+        const std::string badString = "";
+        inputArgs.erase(std::remove(inputArgs.begin(), inputArgs.end(), badString), inputArgs.end());
+
         if (inputArgs.empty())
             continue;
         std::string inputCommand = inputArgs[0];
@@ -43,5 +50,6 @@ void App::run() {
         }
         if (validCommandName == false)
             responseProtocol->BadRequest();
+        outputStream->flush();
     }
 }

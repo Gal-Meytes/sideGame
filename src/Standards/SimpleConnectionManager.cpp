@@ -10,17 +10,15 @@ SimpleConnectionManager::SimpleConnectionManager(int numConnections, IConnection
 }
 
 void SimpleConnectionManager::run() {
-    std::vector<std::thread *> threads;
-    for (;numConnections>0; numConnections--) {
+    std::vector<std::thread > threads;
+    while (true) {
         IConnection *connection = iConnectionFactory->fabricateIConnection();
         if (connection == nullptr)
-            break;
+            continue;
         App* newApp = iAppFactory->fabricateApp(connection);
-        std::thread newThread(&App::run, newApp);
-        newThread.join();
-        threads.push_back(&newThread);
+        new std::thread(&App::run, newApp);
     }
-    for (std::thread * _thread: threads)
-        if (_thread->joinable())
-        _thread->join();
+//    for (std::thread& _thread: threads)
+//        if (_thread.joinable())
+//        _threadjoin();
 }

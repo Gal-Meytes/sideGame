@@ -4,9 +4,9 @@
 
 #ifndef MY_PROJECT_IIOFACTORY_HPP
 #define MY_PROJECT_IIOFACTORY_HPP
-#include "../Interfaces/InputStream.hpp"
-#include "../Interfaces/OutputStream.hpp"
-#include "../Interfaces/ErrorStream.hpp"
+#include "../../Interfaces/InputStream.hpp"
+#include "../../Interfaces/OutputStream.hpp"
+#include "../../Interfaces/ErrorStream.hpp"
 
 class IIOFactory {
 public:

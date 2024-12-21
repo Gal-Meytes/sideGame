@@ -4,7 +4,7 @@
 
 #ifndef MY_PROJECT_ICONNECTIONFACTORY_HPP
 #define MY_PROJECT_ICONNECTIONFACTORY_HPP
-#include "../Interfaces/IConnection.hpp"
+#include "../../Interfaces/IConnection.hpp"
 
 class IConnectionFactory {
 public:
