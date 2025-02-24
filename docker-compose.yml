@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  server:
+    container_name: ex2-server
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+    volumes:
+      - /mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/Project/Part2/Project_now_2/Copy GM-Metflix - CopyCopy/Data:/app/data
+    networks:
+      - app-network
+
+  python-client:
+    container_name: ex2-client
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+  tests:
+    container_name: ex2-tests
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

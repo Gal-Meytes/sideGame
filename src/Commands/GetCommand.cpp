@@ -43,6 +43,10 @@ GetCommand::GetCommand(Storage *storage,
     this->responseProtocol = responseProtocol;
 }
 void GetCommand::execute(std::vector<std::string> arguments) {
+    if (arguments.size() < 2) {
+        responseProtocol->BadRequest();
+        return;
+    }
     std::string userId = arguments[0];
     std::string movieId = arguments[1];
 

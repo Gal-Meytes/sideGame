@@ -22,6 +22,9 @@ FileStorageDevice::FileStorageDevice(std::string directory) {
 
     // Check if directories exist or create them
     if (mkdir(directory.c_str(), 0777) == -1 && errno != EEXIST) {
+		printf("%s\n",directory.c_str());
+		perror("mkdir failed");
+        std::cerr << "something!!!" <<std::endl;
         // Handle directory creation failure
         std::cerr << "Error creating directory: " << directory << std::endl;
         return;

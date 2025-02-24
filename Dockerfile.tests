@@ -1,0 +1,31 @@
+# Use an official Ubuntu base image
+FROM ubuntu:22.04
+
+WORKDIR /app
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    cmake \
+    g++ \
+    make \
+    git \
+    wget \
+    unzip  # Required for FetchContent with GoogleTest
+
+# Copy the entire project into the container
+COPY . /app
+
+# Ensure a clean build directory
+RUN rm -rf /app/build && mkdir -p /app/build
+
+# Set working directory to build
+WORKDIR /app/build
+
+# Run CMake configuration and build the test executable
+RUN cmake .. -DCMAKE_CACHEFILE_DIR=/app/build && make -j$(nproc)
+
+# Ensure test data directory exists
+RUN mkdir -p /app/testsData
+
+# Set the default command to run tests
+CMD ["./tests_exe"]

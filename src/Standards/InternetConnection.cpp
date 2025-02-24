@@ -12,11 +12,19 @@ InternetConnection::~InternetConnection() {
 std::string InternetConnection::readLine() {
     std::string result;
     char buffer [1024];
+    bool hasBeenRead = false;
     int bytesRead;
     do {
         bytesRead = read(clientSocket, &buffer, sizeof (buffer));
-        if (bytesRead > 0)
+        if (bytesRead == -1)
+            return "invalid";
+        if (bytesRead > 0) {
             result.append(buffer, bytesRead);
+            hasBeenRead = true;
+        }
+        if (bytesRead == 0 && hasBeenRead == false) {
+            return "invalid";
+        }
     } while (bytesRead == sizeof (buffer));
     return result;
 }

@@ -43,7 +43,7 @@ int main(int argc, char* argv[]) {
         return 0;
 
     std::string input;
-    std::string folderDir = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
+    std::string folderDir = "/app/data";
 
     IStorageDeviceFactory* storageDeviceFactory = new FileStorageDeviceFactory(&folderDir);
     IAppFactory* appFactory = new AppFactory(storageDeviceFactory);

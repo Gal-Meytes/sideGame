@@ -41,10 +41,6 @@ User::User(std::string serialized_user) {
     for (size_t i = 4; i < tokens.size() - 1; i++) {
         movieIds.push_back(tokens[i]);
     }
-//    for (std::string movie : movieIds) {
-//        std::cout << movie << std::endl;
-//    }
-    
     // Create the new User object
     this->userID = userID;
     this->movieIds = movieIds;

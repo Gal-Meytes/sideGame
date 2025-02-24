@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 #include "../Classes/Storage.h"
 #include "../Standards/FileStorageDevice.cpp"
-#include "../Can remove/RecommendCommand.hpp"
 #include "../Commands/HelpCommand.hpp"
-#include "../Can remove/AddCommand.hpp"
 #include "../Interfaces/StorageDevice.h"
 #include <algorithm>
 #include <unordered_set>
@@ -13,30 +11,55 @@
 #include <iostream>
 #include "../Classes/User.h"
 #include "../Classes/StorageIterator.hpp"
+#include "../Commands/PostCommand.hpp"
+#include "../Standards/ConsoleErrorStream.hpp"
+#include "../Standards/ConsoleOutputStream.hpp"
+#include "../Standards/StreamHTTPResponseProtocol.hpp"
+#include "../Factories/StdCommandFactory.hpp"
+#include "../Standards/StringOutputStream.hpp"
+#include "../Standards/StreamHTTPResponseProtocol.hpp"
+#include "../Factories/StdCommandFactory.hpp"
+#include "../Classes/Storage.h"
+#include "../Standards/EmptyResponseProtocol.hpp"
 
-const char* dataPath = "/usr/src/mytest";
+const char* dataPath = "/app/testsData";
 
 // Test for `help` function
 TEST(HelpFunctionTest, DisplayHelpMessage) {
-    std::string expectedHelpMessage = 
-        "  add [userId] [movieIds] ...\n";
-        "  recommend [userId] [movieId]\n";
-        "  help\n";
+    StorageDevice* device = new FileStorageDevice(dataPath);
+    Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new EmptyResponseProtocol();
 
-    std::string actualHelpMessage = testhelp();
-    EXPECT_EQ(actualHelpMessage, expectedHelpMessage);
+    std::string expectedHelpMessage =
+        "\nDELETE [userId] [movieIds] ...\n"
+        "GET [userId] [movieId]\n"
+        "PATCH [userId] [movieIds] ...\n"
+        "POST [userId] [movieIds] ...\n"
+        "help\n";
+    StdCommandFactory* stdCommandFactory = new StdCommandFactory(&storage, outputStream, errorStream, responseProtocol);
+    ICommand* helpCommand = (*stdCommandFactory->commands())["help"];
+    helpCommand->execute(std::vector<std::string>());
+
+    EXPECT_EQ(outputStream->getOutput(), expectedHelpMessage);
 }
 
 TEST(AddFunctionTest, AddNewUser) {
     StorageDevice* device = new FileStorageDevice(dataPath);
     Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
 
     // Prepare test data
-    std::vector<std::string> movieIds = {"movie1", "movie2"};
+    std::vector<std::string> postValue = {"1", "movie1", "movie2"};
     int userId = 1;
 
     // Call add function
-    add(userId, movieIds, storage);
+    PostCommand* postCommand = new PostCommand(&storage, outputStream, errorStream, responseProtocol);
+
+    postCommand->execute(postValue);
 
     // Validate the user was added successfully
     User user("1", nullptr); // Create a user object with ID "1"
@@ -65,16 +88,18 @@ TEST(StorageTest, RetrieveNonExistentUser) {
 TEST(AddFunctionTest, AddMultipleUsers) {
     StorageDevice* device = new FileStorageDevice(dataPath);
     Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    OutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+
+    PostCommand* postCommand = new PostCommand(&storage, outputStream, errorStream, responseProtocol);
 
     // Prepare test data
-    std::vector<std::string> movieIds1 = {"movie1", "movie2"};
-    std::vector<std::string> movieIds2 = {"movie3", "movie4"};
-    int userId1 = 1;
-    int userId2 = 2;
+    std::vector<std::string> first_user = {"1", "movie1", "movie2"};
+    std::vector<std::string> second_user = {"2", "movie3", "movie4"};
 
-    // Call add function for multiple users
-    add(userId1, movieIds1, storage);
-    add(userId2, movieIds2, storage);
+    postCommand->execute(first_user);
+    postCommand->execute(second_user);
 
     // Validate both users were added successfully
     User user1("1", nullptr);
@@ -91,17 +116,22 @@ TEST(AddFunctionTest, AddMultipleUsers) {
 TEST(UpdateFunctionTest, UpdateUserMovies) {
     StorageDevice* device = new FileStorageDevice(dataPath);
     Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    OutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+
+    PostCommand* postCommand = new PostCommand(&storage, outputStream, errorStream, responseProtocol);
+    PatchCommand* patchCommand = new PatchCommand(&storage, outputStream, errorStream, responseProtocol);
 
     // Prepare test data
-    std::vector<std::string> initialMovieIds = {"movie1", "movie2"};
-    std::vector<std::string> updatedMovieIds = {"movie3", "movie4"};
-    int userId = 1;
+    std::vector<std::string> initialMovieIds = {"1", "movie1", "movie2"};
+    std::vector<std::string> updatedMovieIds = {"1", "movie3", "movie4"};
 
     // Add initial user data
-    add(userId, initialMovieIds, storage);
+    postCommand->execute(initialMovieIds);
 
     // Update user data
-    add(userId, updatedMovieIds, storage);
+    patchCommand->execute(updatedMovieIds);
 
     // Validate the user data was updated successfully
     User user("1", nullptr);
@@ -112,4 +142,140 @@ TEST(UpdateFunctionTest, UpdateUserMovies) {
     ASSERT_TRUE(retrieved->find("movie4") != std::string::npos);
 
     delete device; // Clean up
+}
+
+TEST(DeleteFunctionTest, DeleteUserMovies) {
+    StorageDevice* device = new FileStorageDevice(dataPath);
+    Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    OutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+
+    PostCommand* postCommand = new PostCommand(&storage, outputStream, errorStream, responseProtocol);
+    DeleteCommand* deleteCommand = new DeleteCommand(&storage, outputStream, errorStream, responseProtocol);
+
+    // Prepare test data
+    std::vector<std::string> initialMovieIds = {"1", "movie1", "movie2"};
+    std::vector<std::string> deletedMovieIds = {"1", "movie1", "movie2"};
+
+    // Add initial user data
+    postCommand->execute(initialMovieIds);
+
+    // Update user data
+    deleteCommand->execute(deletedMovieIds);
+
+    // Validate the user data was updated successfully
+    User user("1", nullptr);
+    std::string* retrieved = storage.retrieve(UserType, &user);
+    ASSERT_NE(retrieved, nullptr);
+    // Assuming the storage concatenates movie lists
+    ASSERT_TRUE(retrieved->find("movie3") != std::string::npos);
+    ASSERT_TRUE(retrieved->find("movie4") != std::string::npos);
+
+    delete device; // Clean up
+}
+
+TEST(DeleteFunctionTest, DeleteUserPartialMovies) {
+    StorageDevice* device = new FileStorageDevice(dataPath);
+    Storage storage(device);
+    ErrorStream * errorStream = new ConsoleErrorStream();
+    OutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+
+    PostCommand* postCommand = new PostCommand(&storage, outputStream, errorStream, responseProtocol);
+    DeleteCommand* deleteCommand = new DeleteCommand(&storage, outputStream, errorStream, responseProtocol);
+
+    // Prepare test data
+    std::vector<std::string> initialMovieIds = {"1", "movie1", "movie2"};
+    std::vector<std::string> deletedMovieIds = {"1", "movie2"};
+
+    // Add initial user data
+    postCommand->execute(initialMovieIds);
+
+    // Update user data
+    deleteCommand->execute(deletedMovieIds);
+
+    // Validate the user data was updated successfully
+    User user("1", nullptr);
+    std::string* retrieved = storage.retrieve(UserType, &user);
+    ASSERT_NE(retrieved, nullptr);
+    // Assuming the storage concatenates movie lists
+    ASSERT_TRUE(retrieved->find("movie3") != std::string::npos);
+    ASSERT_TRUE(retrieved->find("movie4") != std::string::npos);
+
+    delete device; // Clean up
+}
+
+TEST(HTTPResponseTest, Ok) {
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+    responseProtocol->Ok();
+
+    std::string expectedOkMessage = "200 OK\n";
+    EXPECT_EQ(outputStream->getOutput(), expectedOkMessage);
+}
+TEST(HTTPResponseTest, Created) {
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+    responseProtocol->Created();
+
+    std::string expectedMessage = "201 Created\n";
+    EXPECT_EQ(outputStream->getOutput(), expectedMessage);
+}
+TEST(HTTPResponseTest, NoContent) {
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+    responseProtocol->NoContent();
+
+    std::string expectedMessage = "204 No Content\n";
+    EXPECT_EQ(outputStream->getOutput(), expectedMessage);
+}
+
+TEST(HTTPResponseTest, BadRequest) {
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+    responseProtocol->BadRequest();
+
+    std::string expectedMessage = "400 Bad Request\n";
+    EXPECT_EQ(outputStream->getOutput(), expectedMessage);
+}
+TEST(HTTPResponseTest, NotFound) {
+    StringOutputStream * outputStream = new StringOutputStream();
+    IResponseProtocol * responseProtocol = new StreamHTTPResponseProtocol(outputStream);
+    responseProtocol->NotFound();
+
+    std::string expectedMessage = "404 Not Found\n";
+    EXPECT_EQ(outputStream->getOutput(), expectedMessage);
+}
+
+TEST(UserTests, UserSerialized) {
+    std::vector<std::string> movieIds = {"movie1", "movie2"};
+    std::string userId = "1";
+
+    User user = User(userId, movieIds);
+    std::string expected = "Id: 1 Movies Watched: movie1 movie2 ";
+    std::string  serialized = user.serialize();
+    EXPECT_EQ(expected, serialized);
+}
+
+TEST(UserTests, UserSerializedToUser) {
+    std::vector<std::string> movieIds = {"movie1", "movie2"};
+    std::string userId = "1";
+
+    User templete = User(userId, movieIds);
+    std::string  serialized = templete.serialize();
+
+    User user = User(serialized);
+    std::vector<std::string> movies = user.getMovies();
+    std::string moviesString = "";
+    for (std::string movie : movies) {
+        moviesString += movie + " ";
+    }
+    movies = movieIds;
+    EXPECT_EQ(movies, templete.getMovies());
+}
+// Main function to run all tests
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

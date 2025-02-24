@@ -17,7 +17,4 @@ void SimpleConnectionManager::run() {
         App* newApp = iAppFactory->fabricateApp(connection);
         new std::thread(&App::run, newApp);
     }
-//    for (std::thread& _thread: threads)
-//        if (_thread.joinable())
-//        _threadjoin();
 }

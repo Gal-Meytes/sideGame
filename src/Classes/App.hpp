@@ -15,6 +15,7 @@ private:
     OutputStream* outputStream;
     IResponseProtocol* responseProtocol;
     std::unordered_map<std::string, ICommand*>* commands;
+    ~App();
 public:
     explicit App (std::unordered_map<std::string, ICommand*>* commands, InputStream* inputStream, OutputStream* outputStream,  IResponseProtocol* responseProtocol);
     void run();

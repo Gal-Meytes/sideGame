@@ -32,7 +32,7 @@ void PatchCommand::execute(std::vector<std::string> arguments) {
         if (!storage->update(UserType, user)) {
             errorStream->outputError("Error: Failed to update user in storage.\n");
         }
-        responseProtocol->Ok();
+        responseProtocol->NoContent();
     }
 }
 void PatchCommand::printCommand() {

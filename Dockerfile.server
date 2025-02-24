@@ -1,0 +1,21 @@
+# Dockerfile for C++ Server
+FROM ubuntu:22.04
+
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential cmake
+
+# Copy C++ project files
+COPY . /app
+
+# Ensure a clean CMake build
+RUN rm -rf build && mkdir -p build
+WORKDIR /app/build
+
+# Run CMake configuration and build
+RUN cmake .. && make -j$(nproc)
+RUN mkdir -p /app/data
+# Ensure the executable is accessible
+CMD ["./server_exe", "8080"]

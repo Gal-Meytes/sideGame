@@ -6,7 +6,7 @@
 
 
 AppData::AppData() {
-    this->storageDirectory = "/mnt/c/Users/Surfer Boy/OneDrive/Desktop/Study/CS/University/Advanced System Programming/forPhotos";
+    this->storageDirectory = "/app/data";
     this->keyFileName = "";
     this->referenceFileName = "";
     this->valueFileName = "";

@@ -29,13 +29,15 @@ App::App(std::unordered_map<std::string, ICommand*>* commands, InputStream* istr
 void App::run() {
     while (true) {
         std::string line = inputStream->readLine();
+        if (line == "invalid")
+            continue;
         std::vector<std::string> inputArgs = split(line, ' ');
 
         const std::string badString = "";
         inputArgs.erase(std::remove(inputArgs.begin(), inputArgs.end(), badString), inputArgs.end());
 
         if (inputArgs.empty())
-            continue;
+            break;
         std::string inputCommand = inputArgs[0];
         inputArgs.erase(inputArgs.begin());
 
