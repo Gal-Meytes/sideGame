@@ -97,4 +97,95 @@ docker-compose down -v
 | View server logs | `docker logs ex2-server` |
 
 ---
-This README provides step-by-step instructions to ensure an easy setup for users of all experience levels.
+
+Remote Server API Documentation
+
+Overview
+
+This API allows users to manage their watched movies. Each user is uniquely identified by a string-based user ID, and movies are also identified by string-based movie IDs. Users may have a list of watched movies, but a new user must have at least one watched movie upon creation. Any invalid command will return an error response.
+
+API Commands
+
+1. DELETE [userId] [movieIds] ...
+
+Description: Removes one or more movies from a user's watched history.
+
+If a movie does not exist in the user's watched history, an error will be returned.
+
+If the user does not exist, an error will be returned.
+
+Example:
+
+DELETE user123 movieA movieB
+
+Invalid Example (movie not in watched list):
+
+DELETE user123 movieX
+
+2. GET [userId] [movieId]
+
+Description: Provides movie recommendations for a user based on the specified movie’s correlation to other watched movies.
+
+If the user does not exist, an error will be returned.
+
+If the movie ID is not recognized, an error will be returned.
+
+Example:
+
+GET user123 movieA
+
+Invalid Example (user does not exist):
+
+GET user999 movieA
+
+3. PATCH [userId] [movieIds] ...
+
+Description: Adds one or more movies to a user’s watched history.
+
+If the user does not exist, an error will be returned.
+
+At least one movie must be provided.
+
+Example:
+
+PATCH user123 movieC movieD
+
+Invalid Example (user does not exist):
+
+PATCH user999 movieE
+
+4. POST [userId] [movieIds] ...
+
+Description: Creates a new user with an initial set of watched movies.
+
+A new user must have at least one movie in their watched history.
+
+If the user already exists, an error will be returned.
+
+Example:
+
+POST newUser456 movieX
+
+Invalid Example (no movie provided):
+
+POST newUser456
+
+5. help
+
+Description: Returns the API interface documentation.
+
+Example:
+
+help
+
+Additional Notes
+
+User IDs and Movie IDs are treated as strings, meaning they can contain letters, numbers, and special characters.
+
+Commands with missing or incorrect parameters will be handled with appropriate error messages.
+
+If a user does not exist, commands that assume the user's existence (e.g., PATCH, GET, or DELETE) will return an error response.
+
+Users can have an empty watch history, but they must have at least one movie at the time of creation.
+
+This concludes the API documentation. Use the help command at any time for a refresher on the API interface.
