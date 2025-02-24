@@ -1,22 +1,88 @@
-# README: Running the Project
+# 🎬 Project Overview
 
-## Prerequisites
-Before starting, ensure you have the following installed on your system:
-- **Docker** (Version 20+ recommended)
-- **Docker Compose** (Version 1.27+ recommended)
+## 🚀 Introduction
 
-If you don't have Docker installed, refer to the [official Docker installation guide](https://docs.docker.com/get-docker/).
+Welcome to the **ultimate storage solution** for movie streaming platforms! This project powers a seamless **user watch history and recommendation engine**, ensuring an optimized viewing experience.
 
-## Setup Instructions
+---
+## 🔥 Core Services
 
-### Step 1: Set Up the Project Directory
-Ensure your project files are inside a directory. Open a **terminal** and navigate to where the `docker-compose.yml` file is located:
+📌 **Storage Device Services** – Securely store and manage user watch history.  
+📌 **Movie Recommendation Engine** – Deliver personalized movie suggestions based on user data.
+
+---
+## 📌 Key Details
+
+✅ Tracks watched movies per user (but **does not** store actual movies or user files).  
+✅ Users and movies are identified by **unique string-based IDs**.  
+✅ Users **must exist** before modifying watch history.
+
+---
+## ✅ What This Project Does & ❌ Doesn't Do
+
+### ✅ What It Does:
+- Stores and manages user watch history efficiently.
+- Provides tailored movie recommendations based on watched content.
+- Serves as the backend infrastructure for a movie streaming platform.
+
+### ❌ What It Doesn't Do:
+- Store actual movie files—only metadata and watch history are saved.
+- Manage user authentication or personal data beyond watch history.
+- Stream movies—this is a data management and recommendation system.
+
+---
+## 🛠 Hands-On API Usage
+
+### 🔄 DELETE [userId] [movieIds] ...
+🗑 Removes movies from a user's watch history. Returns an error if the movie isn't in the history or if the user doesn't exist.
+```
+DELETE user123 movieA movieB
+```
+
+### 🔍 GET [userId] [movieId]
+📌 Provides recommendations for a user based on a specified movie. Returns an error if the user doesn't exist.
+```
+GET user123 movieA
+```
+
+### ➕ PATCH [userId] [movieIds] ...
+🎥 Adds movies to a user’s watch history. Returns an error if the user doesn't exist.
+```
+PATCH user123 movieC movieD
+```
+
+### 🆕 POST [userId] [movieIds] ...
+📂 Creates a new user with an initial movie watch history. At least one movie must be included.
+```
+POST newUser456 movieX
+```
+
+### 🆘 help
+📖 Returns the API interface documentation.
+```
+help
+```
+
+---
+## ⚙️ Running the Project
+
+### 📌 Prerequisites
+Ensure you have installed:
+✅ **Docker** (Version 20+ recommended)  
+✅ **Docker Compose** (Version 1.27+ recommended)  
+
+🔗 [Official Docker installation guide](https://docs.docker.com/get-docker/)
+
+### 🏗 Setup Instructions
+
+#### 📁 Step 1: Set Up the Project Directory
+Navigate to your project folder:
 ```bash
 cd /path/to/your/project
 ```
 
-### Step 2: Modify the Data Path (IMPORTANT)
-The server needs access to a **real data folder** on your local machine at `"path.."`. Modify `docker-compose.yml` to include a volume mapping:
+#### ⚙️ Step 2: Modify the Data Path (IMPORTANT)
+Modify `docker-compose.yml` to include a volume mapping:
 ```yaml
 services:
   server:
@@ -29,163 +95,90 @@ services:
     environment:
       - SERVER_PORT=8080
     volumes:
-      - /absolute/path/to/data:/app/data  # Change this to your actual data path
+      - /absolute/path/to/data:/app/data
     networks:
       - app-network
 ```
-Replace `/absolute/path/to/data` with the actual full path of your data folder.
 
-### Step 3: Build the Docker Images
-Run the following command to build all necessary Docker containers:
+#### 🔨 Step 3: Build the Docker Images
 ```bash
 docker-compose build
 ```
 
-### Step 4: Start the Server in the Background
-To start the server in detached mode:
+#### 🚀 Step 4: Start the Server in the Background
 ```bash
 docker-compose up -d server
 ```
-Check if it's running:
+🔎 Check if it's running:
 ```bash
 docker ps
 ```
 
-### Step 5: Connect Clients to the Server
-Run a new client session:
+#### 🎬 Step 5: Connect Clients to the Server
 ```bash
 docker-compose run --rm python-client
 ```
 Run this command multiple times for multiple clients.
 
-### Step 6: Running Tests (Manually)
-Tests do NOT run automatically. To manually invoke tests:
+#### 🧪 Step 6: Running Tests (Manually)
 ```bash
 docker-compose run --rm tests
 ```
 
-### Step 7: Stop the Server
+#### 🛑 Step 7: Stop the Server
 ```bash
 docker-compose down
 ```
 
-## Additional Commands
-### View Server Logs
+---
+## 📌 Additional Commands
+
+🔍 View Server Logs:
 ```bash
 docker logs ex2-server
 ```
 
-### Restart the Server
+🔄 Restart the Server:
 ```bash
 docker-compose restart server
 ```
 
-### Remove All Containers and Volumes
+🗑 Remove All Containers and Volumes:
 ```bash
 docker-compose down -v
 ```
 
-## Summary of Commands
-| Action | Command |
-|--------|---------|
-| Build the project | `docker-compose build` |
-| Start the server (background) | `docker-compose up -d server` |
-| Run a new client | `docker-compose run --rm python-client` |
-| Run tests (manually) | `docker-compose run --rm tests` |
-| Stop the server | `docker-compose down` |
-| Restart the server | `docker-compose restart server` |
-| View server logs | `docker logs ex2-server` |
+---
+## 🎯 Usage Examples
+
+### ✅ Valid API Commands
+```
+POST user001 movieA  # Create a new user with an initial watched movie
+PATCH user001 movieB movieC  # Add movies to an existing user
+DELETE user001 movieA  # Remove a watched movie
+GET user001 movieB  # Get movie recommendations based on a watched movie
+help  # Retrieve API command list
+```
+
+### ❌ Invalid API Commands
+```
+POST user002  # Error: A new user must have at least one movie
+DELETE user003 movieX  # Error: User does not exist or movie not watched
+PATCH user004  # Error: At least one movie must be provided
+GET user999 movieY  # Error: User does not exist
+```
 
 ---
+## 🏁 Summary of Commands
 
-Remote Server API Documentation
+| 🛠 Action | 💻 Command |
+|----------|-----------|
+| 🚀 Build the project | `docker-compose build` |
+| ▶️ Start the server (background) | `docker-compose up -d server` |
+| 🎬 Run a new client | `docker-compose run --rm python-client` |
+| 🧪 Run tests (manually) | `docker-compose run --rm tests` |
+| 🛑 Stop the server | `docker-compose down` |
+| 🔄 Restart the server | `docker-compose restart server` |
+| 📜 View server logs | `docker logs ex2-server` |
 
-Overview
-
-This API allows users to manage their watched movies. Each user is uniquely identified by a string-based user ID, and movies are also identified by string-based movie IDs. Users may have a list of watched movies, but a new user must have at least one watched movie upon creation. Any invalid command will return an error response.
-
-API Commands
-
-1. DELETE [userId] [movieIds] ...
-
-Description: Removes one or more movies from a user's watched history.
-
-If a movie does not exist in the user's watched history, an error will be returned.
-
-If the user does not exist, an error will be returned.
-
-Example:
-
-DELETE user123 movieA movieB
-
-Invalid Example (movie not in watched list):
-
-DELETE user123 movieX
-
-2. GET [userId] [movieId]
-
-Description: Provides movie recommendations for a user based on the specified movie’s correlation to other watched movies.
-
-If the user does not exist, an error will be returned.
-
-If the movie ID is not recognized, an error will be returned.
-
-Example:
-
-GET user123 movieA
-
-Invalid Example (user does not exist):
-
-GET user999 movieA
-
-3. PATCH [userId] [movieIds] ...
-
-Description: Adds one or more movies to a user’s watched history.
-
-If the user does not exist, an error will be returned.
-
-At least one movie must be provided.
-
-Example:
-
-PATCH user123 movieC movieD
-
-Invalid Example (user does not exist):
-
-PATCH user999 movieE
-
-4. POST [userId] [movieIds] ...
-
-Description: Creates a new user with an initial set of watched movies.
-
-A new user must have at least one movie in their watched history.
-
-If the user already exists, an error will be returned.
-
-Example:
-
-POST newUser456 movieX
-
-Invalid Example (no movie provided):
-
-POST newUser456
-
-5. help
-
-Description: Returns the API interface documentation.
-
-Example:
-
-help
-
-Additional Notes
-
-User IDs and Movie IDs are treated as strings, meaning they can contain letters, numbers, and special characters.
-
-Commands with missing or incorrect parameters will be handled with appropriate error messages.
-
-If a user does not exist, commands that assume the user's existence (e.g., PATCH, GET, or DELETE) will return an error response.
-
-Users can have an empty watch history, but they must have at least one movie at the time of creation.
-
-This concludes the API documentation. Use the help command at any time for a refresher on the API interface.
+---
