@@ -52,6 +52,7 @@ cd /path/to/your/project
 📌 **The server relies on a data folder on the local machine**
 - If this is your **first time**, create an **empty folder** in any location. Keep the path for later.
 - If you have run the server before, you may reuse the previous data folder. The server will automatically access saved data.
+📌 **Note:** the data folder must have appropriate premmisions (0777 is sufficient)
 
 Modify `docker-compose.yml` to include a volume mapping:
 - **Change** `/absolute/path/to/data` to the actual path of your data folder.
