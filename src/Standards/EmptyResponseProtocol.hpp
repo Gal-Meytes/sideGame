@@ -1,0 +1,16 @@
+//
+// Created by Surfer Boy on 19/02/2025.
+//
+
+#ifndef MY_PROJECT_EMPTYRESPONSEPROTOCOL_HPP
+#define MY_PROJECT_EMPTYRESPONSEPROTOCOL_HPP
+
+
+
+class EmptyResponseProtocol {
+
+};
+
+
+
+#endif //MY_PROJECT_EMPTYRESPONSEPROTOCOL_HPP
